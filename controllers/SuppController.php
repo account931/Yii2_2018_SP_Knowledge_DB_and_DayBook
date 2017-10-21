@@ -91,6 +91,7 @@ class SuppController extends Controller
 
 
 
+if(!Yii::$app->user->isGuest){  // if Author
 
 // Active Record + Page Linker for Display entries  
 // **********************************
@@ -98,7 +99,7 @@ class SuppController extends Controller
 //                                 ** 
 
 //PageLinker
-           $query=Support::find()->orderBy ('supp_id DESC') ;
+           $query=Support::find()->orderBy ('supp_id DESC') ;      //Where is USER ID???????????????????//->where([   'supp_user' => Yii::$app->user->identity->username
            $pages= new Pagination(['totalCount' => $query->count(), 'pageSize' => 5]);
            $modelPageLinker = $query->offset($pages->offset)->limit($pages->limit)->all();
 
@@ -129,29 +130,60 @@ class SuppController extends Controller
 //                                 ** 
 
 $time;
-$period2=Yii::$app->getRequest()->getQueryParam('period'); // GET parametr
+$period2=Yii::$app->getRequest()->getQueryParam('period'); // GET parametr // NOT USED???- CONFIRM!!!
 
-//Start DATE for CURRENT  month  ONLY--
+//Start DATE for CURRENT  month  ONLY----------------------------
  // If no S_GET parameter= it is current month; 
           
-          if(!$period2){
-          $todayMonth=date('M'); $todayYear=date('Y');   // getting  to  today  month  &  year; /*month is literal,not  numeric*/
+         // if(!$period2){  // actually this condition can be dropped
 
+                 // Start current month--------------
+                 $todayMonth=date('M'); $todayYear=date('Y');   // getting  to  today  month  &  year; /*month is literal,not  numeric*/
                  $todayMonthNumeric=date('m'); //Numeric  month (i.e 0-9)
                  $days_in_this_month=cal_days_in_month(CAL_GREGORIAN,$todayMonthNumeric,$todayYear);
                 //creating templates  for SQl  condition (i.e "1-Dec-Fri-2016");
                   $startDAte= "1-" .$todayMonth.  "-"   .$todayYear;
                   $endDAte=   $days_in_this_month. "-" .$todayMonth.  "-"  .$todayYear;
+                // END current month--------------
 
-          } // end  if(!$period2){
+
+        //  } // end  if(!$period2){
 
  //END DATE for CURRENT  month  ONLY---------------------------
+
+
+
 
                  
 //Find data for specific month
            $current = Support::find()   ->orderBy ('supp_id DESC')  /*->limit('5')*/ ->where([   'supp_user' => Yii::$app->user->identity->username, /* 'mydb_id'=>1*/   ]) /* ->andWhere(['between', 'mydb_date', $startDAte, $endDAte   ])  */ ->andFilterWhere(['like', 'supp_date', $todayMonth])  ->andFilterWhere(['like', 'supp_date', $todayYear])    ->all(); 
 
                //END Model  for CURRENT  month  ONLY-------------------------
+
+
+
+
+
+for ($i=1; $i<4; $i++){
+
+//Start DATE for Previous month  ONLY----------------------------
+$PrevMonth=date('M', strtotime(date('Y-m'). " -" .$i. " month")); //$PrevMonth=date('M', strtotime(date('Y-m')." -1 month"));         
+$PrevYear=date('Y', strtotime(date('Y-m')." -" .$i. " month"));  // $PrevYear=date('Y', strtotime(date('Y-m')." -1 month"));// getting previous  month  and  year;
+
+//Find data for specific Previous month
+           //createing array {Scurrent1,Scurrent2,}
+            ${'current'.$i} = Support::find()   ->orderBy ('supp_id DESC')  /*->limit('5')*/ ->where([   'supp_user' => Yii::$app->user->identity->username, /* 'mydb_id'=>1*/   ]) /* ->andWhere(['between', 'mydb_date', $startDAte, $endDAte   ])  */ ->andFilterWhere(['like', 'supp_date', $PrevMonth])  ->andFilterWhere(['like', 'supp_date', $PrevYear])    ->all(); 
+
+//END DATE for Previous month  ONLY-------------------------------
+
+} // END FOR(++)
+
+
+
+
+
+
+
           
 
 // **                              **
@@ -166,21 +198,43 @@ $period2=Yii::$app->getRequest()->getQueryParam('period'); // GET parametr
 
 
 
+
 //Final Rendering
         return $this->render('index', [
             'dataProvider' => $dataProvider, // GRIDview
             'pages' => $pages, // AR Page Linker
             'modelPageLinker' => $modelPageLinker, // AR Page Linker pagination
-            'current' => $current, // AR Page Linker pagination
-$current 
-            
+ //if(!Yii::$app->user->isGuest){ 
+            'current' => $current, // Act Record only- for current month summary
+            'current1' => $current1, // Act Record only- for Previous month summary-> created dynamiclyy in for loop
+            'current2' => $current2, // Act Record only- for Previous month summary
+            'current3' => $current3, // Act Record only- for Previous month summary
+
+
+// }           
 
         ]);
 
+//end  render
 
 
 
-    }
+}//if(!Yii::$app->user->isGuest){  // if Author
+
+else{
+//Final Rendering For Guest
+        return $this->render('index'/*, [
+            'dataProvider' => $dataProvider, // GRIDview
+       
+
+          
+
+        ]*/);
+
+//end  render
+}
+
+    }//end action
 
     /**
      * Displays a single Support model.
