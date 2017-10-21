@@ -9,44 +9,75 @@ use yii\widgets\LinkPager;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Supp';
+$this->title = 'Log your time and activity here';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="support-index">
-
+<style>
+.red{color:red;}
+</style>
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Supp', ['create'], ['class' => 'btn btn-success']) ?>
+       
     </p>
 
 
-<?= Html::encode($this->title); 
-echo "</br>";  
+<?php //echo Html::encode($this->title); 
+echo "</br></br></br>";  
 echo Html::img(Yii::$app->getUrlManager()->getBaseUrl().'/images/r2.png' , $options = ["margin-left"=>"3%","class"=>"sunimg","width"=>"18%",] ); 
-echo '<img src="http://cdn2.cloudpro.co.uk/sites/cloudprod7/files/Cloud%20filing%20cabinet_0.jpg" style="width:7%;"/>';
+echo '<img src="http://cdn2.cloudpro.co.uk/sites/cloudprod7/files/Cloud%20filing%20cabinet_0.jpg" style="width:7%;margin-left:6%;" />';
+//echo '<img src="https://cdn.pixabay.com/photo/2012/04/02/15/56/right-24823_960_720.png" style="width:17%;margin-left:6%;" />';
+echo "</br>";
 ?>
 
 
 <style>
-.separate {color:red;font-weight:bold;}
+.separate {color:black;font-weight:bold;}
 </style>
 
 
 
 <?php 
- echo "<p class='separate'> View current month summary</p>";
+ //echo "</br></br><p class='separate'> View current month summary</p>";
 
- echo "<p class='separate'> View your Records</p>";
+ //echo "<p class='separate'> View your Records</p>";
 
- echo "<p class='separate'> Edit your Records</p>";
+// echo "<p class='separate'> Edit your Records</p>";
 
   
 
 
 //my  hyperlink
- echo Html::a( "Add new", ['/supp/create', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'add',] ); 
+ //echo Html::a( "Add new", ['/supp/create', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'add',] ); 
            //echo '</div>'; 
+echo "</br>";
+echo Html::a('New Entry ++', ['create'], ['class' => 'btn btn-success']);
+echo "</br>";
+
+//1111111111111111111111111
+//--------------------------------------------------------------------------------
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     ** 
+
+//<!---------------------- Start Bootstrap------------------->
+//<!--https://nix-tips.ru/yii2-vse-plyushki-twitter-bootstrap.html-->
+
+$infoLink= Html::a( "more  info", ["/site/about", "period" => "",   ] /* $url = null*/, $options = ["title" => "more  info",] );  //can't  inject it  directly to  widget
+
+echo Alert::widget([
+    'options' => [
+        'class' => 'alert-success'
+    ],
+    'body' => "<p class='separate'> View current month summary</p>
+               <p class='separate'> View your Records</p>
+               <p class='separate'> Edit your Records</p>
+          <span style='font-size:0.7em;'>  $infoLink </span>   "
+]);
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
 
 
 
@@ -59,9 +90,7 @@ echo '<img src="http://cdn2.cloudpro.co.uk/sites/cloudprod7/files/Cloud%20filing
 
 
 
-
-
-
+//2222222222222222222222222222222222
 //--------------------------------------------------------------------------------
 // **************************************************************************************
 // **************************************************************************************
@@ -170,7 +199,7 @@ echo Collapse::widget([
 			//echo "<p style='border:solid black 1px;padding:11px;'>".$model->supp_amount."</br></br></br></p>";
 
 		   echo ' <h5 style="color:red;">'. Html::encode($model->supp_date). '=> </h5> ';
-           echo $model->supp_amount. " cases / ".   $model->supp_hour. "hours. Average rate = ". $model->supp_rate. "";
+           echo $model->supp_amount. " cases / ".   $model->supp_hour. " hours. Average rate = ". $model->supp_rate. "";
            echo '<hr style="color:red;width:90%;">';
 
 		  }// end foreach
@@ -201,19 +230,23 @@ echo Collapse::widget([
 		// *******************************************************************
 		// *******************************************************************
         //                                                                  **
-		
-         echo "<h2>View Average month results</h2>";  
+
+
+// Start This month----------------		
+         echo "</br><h2 class='red'>View Average month results</h2>";  
           
          // If no S_GET parameter= it is current month; 
-          $period2=Yii::$app->getRequest()->getQueryParam('period'); 
-          if(!$period2){
+          $period2=Yii::$app->getRequest()->getQueryParam('period'); // not used
+         // if(!$period2){ // not used
+
                      $currentMonth=date('M-Y');
                      $todayMonth=date('m'); $todayYear=date('Y');   
                      $days_in_this_month=cal_days_in_month(CAL_GREGORIAN,$todayMonth,$todayYear);//  days in this  month
-                     echo" </br></br><div  style='border:solid black 1px;padding:3%;'><h3>Current  Month Results (  $currentMonth ,    $days_in_this_month days )  </h3>";
+                     echo"<div  style='border:solid black 1px;padding:3%;'><h3>Current  Month Results (  $currentMonth ,    $days_in_this_month days )  </h3>";
 
   $current_v_am=0;//amount
   $current_hours=0;// hours
+  $current_rate;// rate  -expect ERROR here, when there is any record in the month ->implement it like in Prev Month
          
    foreach ($current  as $wC2) {
    $current_v_am=$current_v_am+$wC2->supp_amount; //all cases amount
@@ -222,11 +255,78 @@ echo Collapse::widget([
 
  echo "</br><p>Month  case amount= <span style='color:red;'>".$current_v_am ."</span></p>"; // Cases  this  month all  amount
  echo "</br><p>Month  case hours= <span style='color:red;'>".$current_hours ."</span></p>"; // Cases  this  month all  amount
- echo "</br><p>Month  rate= <span style='color:red;'>".$current_v_am/$current_hours ."</span></p>"; // Cases  this  month all  amount
+   if($current_v_am==0){$current_rate=0;}else{$current_rate=$current_v_am/$current_hours;} // avoid devision by zero and ther for avoid Fatal error
+ echo "</br><p>Month  rate= <span style='color:red;'>".$current_rate ."</span></p>"; // Cases  this  month all  amount
 
                      echo "</div>";
-          }// end current month
+         // }//End if(!$period2){ // not used // end current month
  echo"</br></br>";
+// END CURRENT MONTH
+// Start This month----------------		
+
+
+
+
+
+
+
+//START Previous months------------------------
+echo "<h2 class='red'>View Previous months results</h2>";
+
+
+
+
+
+
+   echo ' <div class="row">';
+     for ($i=1; $i<4; $i++){
+
+
+//
+$PrevMonth=date('M', strtotime(date('Y-m')." -"   .$i. " month"));     //$PrevMonth=date('M', strtotime(date('Y-m')." -1 month"));        
+$PrevYear=date('Y', strtotime(date('Y-m')." -" .$i. " month"));        // $PrevYear=date('Y', strtotime(date('Y-m')." -1 month")); 
+ 
+$PrevMonth2=date('m', strtotime(date('Y-m')." -" .$i. " month"));            //$PrevMonth2=date('m', strtotime(date('Y-m')." -1 month")); //getting  prev  month (i.e 1-12). We need it in {cal_days_in_month(CAL_GREGORIAN)};
+$days_in_prev_month=cal_days_in_month(CAL_GREGORIAN,$PrevMonth2,$PrevYear);//  number of days in prev month;
+
+
+//Calculate
+  $current_v_am=0;//amount
+  $current_hours=0;// hours
+  $current_rate=0;// rate
+         
+   foreach (${'current'.$i}  as $wC2) {
+   $current_v_am=$current_v_am+$wC2->supp_amount; //all cases amount
+   $current_hours=$current_hours+$wC2->supp_hour;
+    }//end foreach
+
+
+//
+
+
+		echo '<div class="col-sm-4"  style="border:solid black 1px;padding:3%;">';
+              echo" </br></br><h3> Results (  $PrevMonth ,    $days_in_prev_month days )  </h3>";
+              echo "<p>Month  case amount= <span style='color:red;'>".$current_v_am ."</span></p>"; // Cases  this  month all  amount
+              echo "<p>Month  case hours= <span style='color:red;'>".$current_hours ."</span></p>"; // Cases  this  month all  amount
+               if($current_v_am==0){$current_rate=0;}else{$current_rate=$current_v_am/$current_hours;} // avoid devision by zero and ther for avoid Fatal error
+              echo "<p>Month  rate= <span style='color:red;'>".$current_rate ."</span></p>"; // Cases  this  month all  amount
+
+		echo '</div>'; //<!-- End class="col-sm-4"> -->
+
+       } // end for loop { for ($i=1; $i<4; $i++){
+
+    echo '</div>'; // <!--End class="row"> -->
+
+
+//END Previous months-------------------------
+
+
+
+
+
+
+
+
 		// **                                                               **
 		// *******************************************************************
 		// *******************************************************************
@@ -245,7 +345,7 @@ echo Collapse::widget([
 		// *******************************************************************
 		//                                                                  **  
 
-echo "<h2>View GridView</h2>";  
+echo "</br></br><h2 class='red'>View GridView</h2>";  
 				echo GridView::widget([
 				'dataProvider' => $dataProvider,
 				'columns' => [
@@ -307,7 +407,7 @@ echo "<h2>View GridView</h2>";
 //                                                                                     ** 
     else {
            echo' <div  style="border:solid black 1px;padding:3%;display:inline-block">';
-            echo Html::a( "LOG IN FIRST to view all data", ['/site/login', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
+            echo Html::a( "LOG IN FIRST </br>to view the data", ['/site/login', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
             echo '</div>'; 
          }
 
