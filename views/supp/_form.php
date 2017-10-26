@@ -268,11 +268,17 @@ var selectedDate = "";
 //creates a new Date obj with date-> get Mon,Tues
 
  // we -1 because  month returned by DatePicker are from 1-12, not 0-11 as in arrat Monthh
- var monthAdopted=dateArray[1]-1; //alert(monthAdopted);
+ var monthAdopted=dateArray[1]-1; //alert(monthAdopted); // we use dateArray[1]-1 because month value range (1-12) and my Month array range (0-11)
 
- var date = new Date(dateArray[2]+ "," + monthAdopted + "," +dateArray[0]);// Y-M-D
+ var oldDate=dateArray[2]+ "," + dateArray[1] /*monthAdopted*/ + "," +dateArray[0];  // Y-M-D   //  the wrong Week days' Error was here-> by using adopted month {var monthAdopted} u calling not actual date, but with -1 monyth; thus u create object for prev month not current;
+ // use dateArray[1] instead monthAdopted to fix wrong week days;
+ //alert(oldDate);
+
+
+
+ var date = new Date(oldDate);// Y-M-D
  var r = weekdays[date.getDay()]; //get Mon,Tues
- //alert(r);
+ //alert("->"+ date.getDay());// alerts nmumeric
 
     //final assigning
     selectedDateX=dateArray[0]+  '-'    +  Monthh[monthAdopted] + "-"+ r +  "-" + dateArray[2]  ; // date-month(Oct,Nov)-weekDay-Year
