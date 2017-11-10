@@ -31,7 +31,8 @@ class Support extends \yii\db\ActiveRecord
     {
         return [
             [['supp_user', 'supp_date', 'supp_amount', 'supp_hour'], 'required'],
-            [['supp_amount', 'supp_hour'], 'integer'],
+            [['supp_amount',], 'integer'], //[['supp_amount', 'supp_hour'], 'integer'], // disable ''supp_hour' being an integer as it won't accept {7.5}
+             [['supp_hour'], 'number'], //my add {change type ftom INTEGER to NUMBER} as it did not accept hours like {7.5}+ in php myAdmin change type from {integer} to {float}
             [['supp_user','supp_date'], 'string', 'max' => 77],
             [['supp_ip'], 'string', 'max' => 88],
         ];
@@ -83,8 +84,8 @@ public function beforeSave($insert)  //$insert
              if(!empty($this->supp_amount))   {  // if Ven  value  exists
                 // $v_pcs=$_POST['Mydbstart']['mydb_v_am']/($_POST['Mydbstart']['mydb_v_h']*44)*100; // Here we  should  just use $this->field;
                    
-                   $Rate_Calced=$this->supp_amount/$this->supp_hour;
-                  $this->supp_rate=$Rate_Calced;  //assign value to  table 
+                   $Rate_Calced=$this->supp_amount/$this->supp_hour;  //where is it used???
+                  $this->supp_rate=$Rate_Calced;  //assign value to  table // confirm delete??- NO!!!!
                  }// END if(!empty($this->mydb_v_am)) 
                  
 
