@@ -242,12 +242,14 @@ echo Collapse::widget([
                      $currentMonth=date('M-Y');
                      $todayMonth=date('m'); $todayYear=date('Y');   
                      $days_in_this_month=cal_days_in_month(CAL_GREGORIAN,$todayMonth,$todayYear);//  days in this  month
-                     echo"<div  style='border:solid black 1px;padding:3%;'><h3>Current  Month Results (  $currentMonth ,    $days_in_this_month days )  </h3>";
+                     echo"<div  style='border:solid black 1px;padding:3%;text-decoration:underline;'><h3>Current  Month Results (  $currentMonth ,    $days_in_this_month days )  </h3>";
 
   $current_v_am=0;//amount
   $current_hours=0;// hours
   $current_rate;// rate  -expect ERROR here, when there is any record in the month ->implement it like in Prev Month
-         
+   
+
+      
    foreach ($current  as $wC2) {
    $current_v_am=$current_v_am+$wC2->supp_amount; //all cases amount
    $current_hours=$current_hours+$wC2->supp_hour;
@@ -262,7 +264,7 @@ echo Collapse::widget([
          // }//End if(!$period2){ // not used // end current month
  echo"</br></br>";
 // END CURRENT MONTH
-// Start This month----------------		
+// END  This month----------------		
 
 
 
@@ -270,7 +272,7 @@ echo Collapse::widget([
 
 
 
-//START Previous months------------------------
+//START ALL Previous months------------------------
 echo "<h2 class='red'>View Previous months results</h2>";
 
 
@@ -279,7 +281,7 @@ echo "<h2 class='red'>View Previous months results</h2>";
 
 
    echo ' <div class="row">';
-     for ($i=1; $i<4; $i++){
+     for ($i=1; $i<7; $i++){    //($i=1; $i<4; $i++) // 3months
 
 
 //
@@ -305,13 +307,22 @@ $days_in_prev_month=cal_days_in_month(CAL_GREGORIAN,$PrevMonth2,$PrevYear);//  n
 
 
 		echo '<div class="col-sm-4"  style="border:solid black 1px;padding:3%;">';
-              echo" </br></br><h3> Results (  $PrevMonth ,    $days_in_prev_month days )  </h3>";
+              echo" </br></br><h3 style='text-decoration:underline;'> Results (  $PrevMonth ,    $days_in_prev_month days )  </h3>";
               echo "<p>Month  case amount= <span style='color:red;'>".$current_v_am ."</span></p>"; // Cases  this  month all  amount
               echo "<p>Month  case hours= <span style='color:red;'>".$current_hours ."</span></p>"; // Cases  this  month all  amount
                if($current_v_am==0){$current_rate=0;}else{$current_rate=$current_v_am/$current_hours;} // avoid devision by zero and ther for avoid Fatal error
               echo "<p>Month  rate= <span style='color:red;'>".$current_rate ."</span></p>"; // Cases  this  month all  amount
 
 		echo '</div>'; //<!-- End class="col-sm-4"> -->
+
+                 
+              //if past months more than 3 -> show link to dispaly the rest 3 month, which should be hidden
+               //if($i>2){echo "<p>More</p>";}
+
+
+//check if it after 3 month-> after the 3 month we display link to see more
+  if($i==3){echo '<div class="col-sm-12"  style="border:solid black 1px;padding:3%;"> See more </div>';}
+
 
        } // end for loop { for ($i=1; $i<4; $i++){
 
@@ -407,7 +418,7 @@ echo "</br></br><h2 class='red'>View GridView</h2>";
 //                                                                                     ** 
     else {
            echo' <div  style="border:solid black 1px;padding:3%;display:inline-block">';
-            echo Html::a( "LOG IN FIRST </br>to view the data", ['/site/login', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
+            echo Html::a( "LOG IN FIRST </br>to view the data", ['/site/login', 'traceURL' => "logTime",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
             echo '</div>'; 
          }
 
