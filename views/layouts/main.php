@@ -68,12 +68,17 @@ AppAsset::register($this);
             ['label' => 'Re-route', 'url' => ['/site/reroute']],
             ['label' => 'Sort', 'url' => ['/site/sort']],*/
 
+
+
   //SUPP menu
- ['label' => 'Knoledge Base', 'url' => ['/support-data/index']],
+ ['label' => 'Knowledge Base', 'url' => ['/support-data/index']],
  ['label' => 'Trim', 'url' => ['/site/trim']],
- ['label' => 'Support Logs', 'url' => ['/supp/index']],
- ['label' => 'Log time', 'url' => ['/support-data/index']],
- ['label' => 'Merge points', 'url' => ['/support-data/merge']],
+ ['label' => 'Log time', 'url' => ['/supp/index']],
+ //['label' => 'Support Logs', 'url' => '#'],
+
+
+ ['label' => 'Merge points', 'url' => ['/support-data/merge']        ],  /*,'visible'=>['!Yii::app()->user->isGuest']       */
+
 
 
 //Start submenu
@@ -120,7 +125,17 @@ AppAsset::register($this);
           // added  to  let  img  in menu
           'encodeLabels' => false,
 
-    ]);
+
+
+
+
+
+
+
+
+
+
+    ]); //END  NAv widget----------------------
 
 
 
