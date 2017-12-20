@@ -70,8 +70,37 @@ AppAsset::register($this);
 
 
 
+
+
+
+
+//--- Submenu for Guest/ !Guest working---------------------
+/* Yii::$app->user->isGuest ? (
+									[ 'label' => 'For Unlogged', 'url' => ['/site/login'],  //],
+
+									//['label' => 'Something else here', 'url' => ['/site/login'], //can take 1 arg only????
+									]
+                   
+                           ) : ( 
+								  ['label' => 'For Logged', 'url' => ['/site/login'],  //],
+
+									//['label' => 'Something else here', 'url' => '#']
+									]
+								   ), //added comma
+*/
+
+//--- END Submenu for Guest/ !Guest working----------------------------------------------
+
+
+
+
+
+
+
+
+
   //SUPP menu
- ['label' => 'Knowledge Base', 'url' => ['/support-data/index']],
+ ['label' => 'Knowledge Base',  'url' => ['/support-data/index'] ],    
  ['label' => 'Trim', 'url' => ['/site/trim']],
  ['label' => 'Log time', 'url' => ['/supp/index']],
  //['label' => 'Support Logs', 'url' => '#'],
@@ -81,10 +110,12 @@ AppAsset::register($this);
 
 
 
-//Start submenu
+//Start submenu-------------------------
 ['label' => 'Sub',  
         'url' => ['#'],
         'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
+        'visible' => !Yii::$app->user->isGuest,  // non visible for Guests //
+    //  'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->user_type == User::USER_TYPE_SUPER_ADMIN,
         'items' => [
             
             ['label' => 'DataBase', 'url' => ['/support-data/index']],
@@ -106,21 +137,36 @@ AppAsset::register($this);
 
         ],
     ],
-// END  Submenu           
+// END  Submenu   --------------    
+
+
 
 
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
+                ['label' => 'Login', 'url' => ['/site/login'],  //],
+
+                //['label' => 'Something else here', 'url' => '#']
+                ]
+                   
+            ) : ( 
+               
+                 
                 '<li>'
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(
                     'Logout (' . Yii::$app->user->identity->username . ')',
                     ['class' => 'btn btn-link logout']
-                )
+                                    )
+
+ 
                 . Html::endForm()
                 . '</li>'
-            )
+               )
+
+//-----------К
+
+           
+//-------------|К
         ],
           // added  to  let  img  in menu
           'encodeLabels' => false,
