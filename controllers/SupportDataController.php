@@ -113,7 +113,7 @@ class SupportDataController extends Controller
 
 //PageLinker
            $query=SupportData::find()->orderBy ('sData_id DESC') ;
-           $pages= new Pagination(['totalCount' => $query->count(), 'pageSize' => 9]);
+           $pages= new Pagination(['totalCount' => $query->count(), 'pageSize' => 15]);
            $modelPageLinker = $query->offset($pages->offset)->limit($pages->limit)->all();
 
   
@@ -132,7 +132,25 @@ $searchMine=new SearchFormMine();
 if ($searchMine->load(Yii::$app->request->post()) && $searchMine->validate()) 
    {
          $q=Html::encode($searchMine->q);
-         return $this->redirect (Yii::$app->urlManager->createUrl (['support-data/searchmine','q'=>$q]));
+
+//check if latins only
+// if(strlen($q) != mb_strlen($q, 'utf-8')) {echo "<p>No russian</p>";} else{echo "<p>Charset is OK</p>";}
+
+
+   $charStatus="";//flag if Char is ok, i.e no Russain
+   //rex exp to check if tje input is not russian , as it triggers SQL error
+   if( preg_match ('/^[\p{Cyrillic}\p{Common}]+$/u', $q)  ) {$charset="Russian detected, English only"; } else{$charset="Charset OK"; $charStatus="OK";}
+                  Yii::$app->getSession()->setFlash('searchFail', " $charset"); //flashdisplay whether charset is OK; it uses the same flash as string length
+
+if($charStatus=="OK"){
+         if( strlen($q)>3) {  //search word more than 4
+        return $this->redirect (Yii::$app->urlManager->createUrl (['support-data/searchmine','q'=>$q]));
+         }else{
+                Yii::$app->getSession()->setFlash('searchFail', " Search pattern should be at least 4 letters");
+              }
+}// END if($charStatus=="OK"){
+
+
    }
 //END search model init--------------------------
 

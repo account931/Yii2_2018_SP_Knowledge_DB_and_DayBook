@@ -77,7 +77,7 @@ class SuppController extends Controller
 				    'query' => Support::find(),
 				'pagination' => [
 				'pageSize' => 4,],
-			 'sort'=> ['defaultOrder' => ['supp_id'=>SORT_DESC]],
+			 'sort'=> ['defaultOrder' => ['supp_id'=>SORT_DESC]],  //change SORTING to -> supp_date DESC
 
 		]);
 		//END DataProvider
@@ -98,8 +98,8 @@ if(!Yii::$app->user->isGuest){  // if Author
 // **********************************
 //                                 ** 
 
-//PageLinker
-           $query=Support::find()->orderBy ('supp_id DESC') ;      //Where is USER ID???????????????????//->where([   'supp_user' => Yii::$app->user->identity->username
+//PageLinker   //was orderBy ('supp_date DESC')-> change to sort by date
+           $query=Support::find()->orderBy ('supp_id DESC')->where([   'supp_user' => Yii::$app->user->identity->username]) ;  //FIXED    //Where is USER ID???????????????????//->where([   'supp_user' => Yii::$app->user->identity->username
            $pages= new Pagination(['totalCount' => $query->count(), 'pageSize' => 5]);
            $modelPageLinker = $query->offset($pages->offset)->limit($pages->limit)->all();
 
@@ -137,6 +137,8 @@ $period2=Yii::$app->getRequest()->getQueryParam('period'); // GET parametr // NO
           
          // if(!$period2){  // actually this condition can be dropped
 
+
+
                  // Start current month--------------
                  $todayMonth=date('M'); $todayYear=date('Y');   // getting  to  today  month  &  year; /*month is literal,not  numeric*/
                  $todayMonthNumeric=date('m'); //Numeric  month (i.e 0-9)
@@ -147,15 +149,14 @@ $period2=Yii::$app->getRequest()->getQueryParam('period'); // GET parametr // NO
                 // END current month--------------
 
 
+
+
         //  } // end  if(!$period2){
 
  //END DATE for CURRENT  month  ONLY---------------------------
 
-
-
-
                  
-//Find data for specific month
+//Find data for specific month--FOR CURRENT MONTH
            $current = Support::find()   ->orderBy ('supp_id DESC')  /*->limit('5')*/ ->where([   'supp_user' => Yii::$app->user->identity->username, /* 'mydb_id'=>1*/   ]) /* ->andWhere(['between', 'mydb_date', $startDAte, $endDAte   ])  */ ->andFilterWhere(['like', 'supp_date', $todayMonth])  ->andFilterWhere(['like', 'supp_date', $todayYear])    ->all(); 
 
                //END Model  for CURRENT  month  ONLY-------------------------
@@ -164,7 +165,9 @@ $period2=Yii::$app->getRequest()->getQueryParam('period'); // GET parametr // NO
 
 
 
-for ($i=1; $i<4; $i++){
+// FIND SQL DATA for ALL PREVIOUS MONTHS IN FOR LOOP
+
+for ($i=1; $i<7; $i++){  //($i=1; $i<4; $i++)  // for 3 month
 
 //Start DATE for Previous month  ONLY----------------------------
 $PrevMonth=date('M', strtotime(date('Y-m'). " -" .$i. " month")); //$PrevMonth=date('M', strtotime(date('Y-m')." -1 month"));         
@@ -179,7 +182,7 @@ $PrevYear=date('Y', strtotime(date('Y-m')." -" .$i. " month"));  // $PrevYear=da
 } // END FOR(++)
 
 
-
+//END  FIND SQL DATA for ALL PREVIOUS MONTHS IN FOR LOOP
 
 
 
@@ -209,7 +212,9 @@ $PrevYear=date('Y', strtotime(date('Y-m')." -" .$i. " month"));  // $PrevYear=da
             'current1' => $current1, // Act Record only- for Previous month summary-> created dynamiclyy in for loop
             'current2' => $current2, // Act Record only- for Previous month summary
             'current3' => $current3, // Act Record only- for Previous month summary
-
+            'current4' => $current4, 
+            'current5' => $current5, 
+            'current6' => $current6, 
 
 // }           
 
@@ -296,6 +301,11 @@ else{
 
              $model->supp_ip=$_SERVER['REMOTE_ADDR'];
 
+             
+
+
+
+
                 //Rate Save   
                  /*if(isset($_POST['Support'])){
                  $model->supp_rate= $_POST['Support']['supp_amount']/$_POST['Support']['supp_hour'];
@@ -303,9 +313,34 @@ else{
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
+
+                
+                    //start convert to Unix---> we sent it to model Support to beforeSave()
+                        /*$MyDAte=$model->supp_date;
+                        $j=explode("-",$MyDAte);  
+                        $Monthh = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        $indexOF=array_search($j[1],$Monthh); //indexOf Month
+                        $indexOF=$indexOF+1;
+                        
+                        $UnixPatternDate=$j[0] ."-". $indexOF ."-". $j[3];
+                        $Unix=strtotime($UnixPatternDate);*/
+                    // END convert to Unix ---> we sent it to model Support to beforeSave()
+
+
+
               
+                      //Flash -dispalays saved items
+                    $MyDAte=$model->supp_date;
+                    $MyAmount=$model->supp_amount;//supp amount
+                    $MyHour=$model->supp_hour;//supp amount
+                    $MyRate=$model->supp_rate; //take value ftom Support model /*$model->supp_amount/$model->supp_hour*/
+
+
+                    Yii::$app->getSession()->setFlash('savedItem', "<b>$MyDAte </b> =>  <b>$MyAmount</b>   cases / <b>$MyHour</b> hours: rate <b>$MyRate</b>  has been SAVED ");
+
+            return $this->redirect(['create', 'id' => $model->supp_id]);  //return $this->redirect(['view', 'id' => $model->supp_id]);
+                   
              
-            return $this->redirect(['view', 'id' => $model->supp_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
