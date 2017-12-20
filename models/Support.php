@@ -13,6 +13,7 @@ use Yii;
  * @property string $supp_ip
  * @property integer $supp_amount
  * @property integer $supp_hour
+ * @property integer supp_unix_Stamp
  */
 class Support extends \yii\db\ActiveRecord
 {
@@ -34,7 +35,8 @@ class Support extends \yii\db\ActiveRecord
             [['supp_amount',], 'integer'], //[['supp_amount', 'supp_hour'], 'integer'], // disable ''supp_hour' being an integer as it won't accept {7.5}
              [['supp_hour'], 'number'], //my add {change type ftom INTEGER to NUMBER} as it did not accept hours like {7.5}+ in php myAdmin change type from {integer} to {float}
             [['supp_user','supp_date'], 'string', 'max' => 77],
-            [['supp_ip'], 'string', 'max' => 88],
+            [['supp_ip'], 'string', 'max' => 88],  
+            [['supp_unix_Stamp'], 'integer', 'max' => 77],  //supp_unix_Stamp
         ];
     }
 
@@ -48,8 +50,8 @@ class Support extends \yii\db\ActiveRecord
             'supp_user' => 'User',
             'supp_date' => 'Date',
             'supp_ip' => 'Supp Ip',
-            'supp_amount' => 'Supp Amount',
-            'supp_hour' => 'Supp Hour',
+            'supp_amount' => 'Case Amount',
+            'supp_hour' => 'Hours',
             'supp_rate' => 'Rate per hour',
         ];
     }
@@ -92,6 +94,18 @@ public function beforeSave($insert)  //$insert
 
 
    
+                    //start convert to Unix-------------
+                        $MyDAte=$this->supp_date;
+                        $j=explode("-",$MyDAte);  
+                        $Monthh = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        $indexOF=array_search($j[1],$Monthh); //indexOf Month
+                        $indexOF=$indexOF+1;
+                        
+                        $UnixPatternDate=$j[0] ."-". $indexOF ."-". $j[3];
+                        $Unix=strtotime($UnixPatternDate);
+                        $this->supp_unix_Stamp=$Unix;
+                    // END convert to Unix-------------------
+
      
 
 // Emd  Place your custom code her
