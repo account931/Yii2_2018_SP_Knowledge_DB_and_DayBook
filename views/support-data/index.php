@@ -3,7 +3,7 @@
 //
 //Support CR's knowledge base
 
-
+Header('Content-Type: text/html; charset=utf-8');
 
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -42,6 +42,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
+<!---------flash------------>
+
+ <?php /*=*/ $nn=Yii::$app->session->getFlash('regged');  ?>
+
+
+
+<?php
+echo"</br>";
+if (Yii::$app->session->hasFlash('regged')){echo Alert::widget([
+    'options' => [
+        'class' => 'alert alert-info'
+    ],
+    'body' => "$nn"
+]);}
+//  End  If  saved FLASH IS SET /  has  flash and  has  falsh   show  Bootstarp    alert  window------
+?>
+
+<!----------END flash--------------------->
 
 
 
@@ -145,6 +163,26 @@ echo Collapse::widget([
 
 </div><!------ Start container Trigger for Form to add+ search------>
 
+
+
+</br>
+<!---------flash if Sewarch word <4------------>
+<?php $nn=Yii::$app->session->getFlash('searchFail');
+
+
+if (Yii::$app->session->hasFlash('searchFail'))
+    {
+		echo Alert::widget([
+			'options' => [
+				'class' => 'alert alert-danger'
+			],
+			'body' => "$nn"
+		]);
+     
+}
+// End  If  saved FLASH IS SET /  has  flash and  has  falsh   show  Bootstarp    alert  window------
+?>
+<!---------END flash if Sewarch word < 4------------>
 
 
 
