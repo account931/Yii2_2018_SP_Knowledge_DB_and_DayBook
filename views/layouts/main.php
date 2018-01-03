@@ -106,15 +106,15 @@ AppAsset::register($this);
  //['label' => 'Support Logs', 'url' => '#'],
 
 
- ['label' => 'Merge points', 'url' => ['/support-data/merge']        ],  /*,'visible'=>['!Yii::app()->user->isGuest']       */
-
+ ['label' => 'Merge points', 'url' => ['/support-data/merge']         ],          /*,'visible'=>['!Yii::app()->user->isGuest']       */
+ ['label' => 'Day Book', 'url' => ['/day-book/index']    /* ,'visible' => !Yii::$app->user->isGuest, */     ], 
 
 
 //Start submenu-------------------------
 ['label' => 'Sub',  
         'url' => ['#'],
         'template' => '<a href="{url}" >{label}<i class="fa fa-angle-left pull-right"></i></a>',
-        'visible' => !Yii::$app->user->isGuest,  // non visible for Guests //
+        'visible' => !Yii::$app->user->isGuest,  // WORKING   non visible for Guests!!!!!!!!!!!!!!!! //
     //  'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->user_type == User::USER_TYPE_SUPER_ADMIN,
         'items' => [
             
