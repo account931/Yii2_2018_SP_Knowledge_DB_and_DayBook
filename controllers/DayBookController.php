@@ -68,21 +68,21 @@ public $timestamp;// delete?????????????????????????????????
 // *******************
 // *******************
 //                  **
-//Start Function MydateToUnix (convert 4-Jan-Thu-2018 to UnixTime ) ------------------------
+//Start Function MydatePrepare (convert 4-Jan-Thu-2018 to UnixTime ) // False it just change {4-Jan-Thu-2018} to {1-4-2018} which is OK format to get UnixStamp from it--------------------
 function MydateToUnix ($obj) {
 $dateArray=explode("-", $obj);    // {4-Jan-Thu-2018} split/explode to Array by "-"
 $objectMonth = ['Jan' ,'Feb' ,'Mar' ,'Apr' ,'May' , 'Jun' , 'Jul' ,'Aug' ,'Sep' ,'Oct' ,'Nov', 'Dec']; // Month
 $position=array_search($objectMonth[1]   ,$objectMonth); // returns 1-12
-$position=$position-1; // month 1-2 , not 0-11
+$position=$position; // month 1-2 , not 0-11
 
 
-$dateFormat=$dateArray[0]    .'/'.   $position    .'/'.     $dateArray[3];     // Make format 4/1/2016
-$timestamp = strtotime( $dateFormat );   // get Unix Time from  4/1/2016
+$dateFormat=$position     .'-'.    $dateArray[0]    .'-'.     $dateArray[3];     // Make format 4/1/2016
+//$timestamp = strtotime(   $dateFormat );   // get Unix Time from  4/1/2016 // format 'month/day/2018' !!!!!!!!!!!!!!!!!!!!!!1   // Deactivate just this one
 
-return $timestamp;
+return  $dateFormat  /* $timestamp */ ;  // returns {1-4-2018} 
 
 }
-//END Function MydateToUnix  (convert 4-Jan-Thu-2018 to UnixTime ) ------------------------
+//END Function MydatePrepare   (convert 4-Jan-Thu-2018 to UnixTime )  // False it just change {4-Jan-Thu-2018} to {1-4-2018} which is OK format to get UnixStamp from it- ------------------------
 // **           **
 // ***************
 // ***************
@@ -94,8 +94,11 @@ return $timestamp;
 
 
 //----------------------
-$model = new DayBook();
+$model = new DayBook();  // creates model for SQL TAble
 
+
+
+//it will be used for << >>
 
 if ($model->load(Yii::$app->request->post()) ) {  // if u click the button-----------------------
 
@@ -109,7 +112,7 @@ if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exi
                     // if Unix dateTime does not exist in URL, we process the current day and convert it to Unix with function MydateToUnix($dateX
                     echo "DOES NOT Exist, use today";
                     $dateX=date('j-M-D-Y');  // today day
-                    $t=MydateToUnix($dateX);
+                    $t=MydatePrepare($dateX);
                     
                     }
 
@@ -130,7 +133,7 @@ $timestamp = strtotime( $dateFormat );   // get Unix Time from  4/1/2016
 
 
 
-return $this->redirect(['/day-book/index'   ,  'myUnix' => /*$dateFormat*/ $t   ,]);   // redirect to same page but add $GET with Unix DateStamp, this Unix will be used for SELECT
+return $this->redirect(['/day-book/index'   ,  'myUnix' =>  $t    ,]);   // redirect to same page but add $GET with Unix DateStamp, this Unix will be used for SELECT
 
 // END Get The $_GET['myUnix'] params from URL
 
