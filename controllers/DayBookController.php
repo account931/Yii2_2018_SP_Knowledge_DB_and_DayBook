@@ -17,6 +17,11 @@ class DayBookController extends Controller
     /**
      * @inheritdoc
      */
+
+
+public $timestamp;// delete?????????????????????????????????
+
+
     public function behaviors()
     {
         return [
@@ -55,7 +60,98 @@ class DayBookController extends Controller
 // END GRIDVIEW--------
 
 
+
+
+
+
+
+// *******************
+// *******************
+//                  **
+//Start Function MydateToUnix (convert 4-Jan-Thu-2018 to UnixTime ) ------------------------
+function MydateToUnix ($obj) {
+$dateArray=explode("-", $obj);    // {4-Jan-Thu-2018} split/explode to Array by "-"
+$objectMonth = ['Jan' ,'Feb' ,'Mar' ,'Apr' ,'May' , 'Jun' , 'Jul' ,'Aug' ,'Sep' ,'Oct' ,'Nov', 'Dec']; // Month
+$position=array_search($objectMonth[1]   ,$objectMonth); // returns 1-12
+$position=$position-1; // month 1-2 , not 0-11
+
+
+$dateFormat=$dateArray[0]    .'/'.   $position    .'/'.     $dateArray[3];     // Make format 4/1/2016
+$timestamp = strtotime( $dateFormat );   // get Unix Time from  4/1/2016
+
+return $timestamp;
+
+}
+//END Function MydateToUnix  (convert 4-Jan-Thu-2018 to UnixTime ) ------------------------
+// **           **
+// ***************
+// ***************
+
+
+
+
+
+
+
+//----------------------
 $model = new DayBook();
+
+
+if ($model->load(Yii::$app->request->post()) ) {  // if u click the button-----------------------
+
+if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing
+            {
+             echo "Exist, use set date";
+             //$dateX=Yii::$app->getRequest()->getQueryParam('myUnix'); 
+             $t=Yii::$app->getRequest()->getQueryParam('myUnix');
+             } else
+                   {
+                    // if Unix dateTime does not exist in URL, we process the current day and convert it to Unix with function MydateToUnix($dateX
+                    echo "DOES NOT Exist, use today";
+                    $dateX=date('j-M-D-Y');  // today day
+                    $t=MydateToUnix($dateX);
+                    
+                    }
+
+/*
+$dateArray=explode("-", $dateX);    // {4-Jan-Thu-2018} split/explode to Array by "-"
+$objectMonth = ['Jan' ,'Feb' ,'Mar' ,'Apr' ,'May' , 'Jun' , 'Jul' ,'Aug' ,'Sep' ,'Oct' ,'Nov', 'Dec']; // Month
+$position=array_search($objectMonth[1]   ,$objectMonth); // returns 1-12
+$position=$position-1; // month 1-2 , not 0-11
+
+
+$dateFormat=$dateArray[0]    ."/".   $position    ."/".     $dateArray[3];     // Make format 4/1/2016
+$timestamp = strtotime( $dateFormat );   // get Unix Time from  4/1/2016
+*/
+
+
+
+
+
+
+
+return $this->redirect(['/day-book/index'   ,  'myUnix' => /*$dateFormat*/ $t   ,]);   // redirect to same page but add $GET with Unix DateStamp, this Unix will be used for SELECT
+
+// END Get The $_GET['myUnix'] params from URL
+
+
+
+
+} // END if ($model->load(Yii::$app->request->post()) ) {  //if u click the button-----------------------
+
+
+
+
+
+// Get The $_GET['myUnix'] params from URL
+
+//--------------------------
+ 
+
+
+
+
+
 
 
 
