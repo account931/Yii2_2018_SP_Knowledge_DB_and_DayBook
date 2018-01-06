@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Day Books';
+$this->title = 'Day Books';  // title
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -24,18 +24,23 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo Html::img(Yii::$app->getUrlManager()->getBaseUrl().'/images/datetime.png' , $options = ["margin-left"=>"3%","class"=>"sunimg","width"=>"18%",] ); ?>
 
-    </br></br><p>
+   </br></br><p>
         <?= Html::a('Create Day Book', ['create'], ['class' => 'btn btn-success']) ?>  <!--- Create new---->
-    </p>
+   </p> 
 
 
 
+<?php
+// Check $_GET['myUnix'] params from URL---DELETE???
+/*
+ if(  Yii::$app->getRequest()->getQueryParam('myUnix') ) {
+             echo "Exist";
+             } else{
+                    echo "DOES NOT Exist";
+                    }
+*/
 
-
-
-
-
-
+?>
 
 
 
@@ -45,6 +50,16 @@ $this->params['breadcrumbs'][] = $this->title;
 </br></br><hr style="width:60%;">
 <!--</br><hr style="width:80%;">-->
 </br></br></br></br></br></br>
+
+<style>
+/*Class for taken and free dates*/
+.taken{background-color:red;border:solid red 2px;color:white;padding:1px;}
+.free{background-color:green;color:white;padding:3px;cursor:pointer;}
+
+/*Link to book a date*/
+.bookLink{font-size:0.6em; text-decoration: underline;}
+</style>
+
 
 
 <?php
@@ -58,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $form = ActiveForm::begin(); ?>
 
-<?= $form->field($model, 'dbook_bookedDate')->textInput(['value'=>$d , 'id' => 'myDateInputDayBook']) ?>
+<?= $form->field($model, 'dbook_bookedDate')->textInput(['value'=>$d , 'id' => 'myDateInputDayBook']   ) ?>
        
 <input type="button" value="<<" id="prevDay"/>  <input type="button" value=" Calendar" id="calendarPick"/>  <input type="button" value=">>" id="nextDay"/> </br></br>
     
@@ -71,6 +86,123 @@ $this->params['breadcrumbs'][] = $this->title;
  <?php ActiveForm::end(); ?>
 
 <!-----------------------------------------------------------END FORM---------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+<?php 
+//UnixTime from Controller, used to form <a href>
+echo "---> ". $timestampUnix ."</br>".  $time;  
+echo "</br>";
+?>
+
+<?php 
+      //delete, just test
+      foreach ($result as $model) 
+      {
+      echo $model->	dbook_agenda;
+      echo "</br>";
+      }
+      //delete, just test
+
+
+
+
+/*function DisplayReserved(Si,$indexOf,$result){
+echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+
+}*/
+
+
+
+
+// START CORE algorithm------------------------------------------------------------------
+       $bIntervals=array();// array for intervals available 
+
+		foreach($result as $ss){
+                             array_push($bIntervals,$ss->dbook_intervals);
+                             }
+
+      print_r($bIntervals);
+	  
+	  // sTART Inject---
+	  for($i=9; $i<18; $i++){
+             //if time exists in array  $bIntervals, displays taken
+             if(in_array($i, $bIntervals))
+			 { 
+			   $indexOf=array_search($i,$bIntervals); // find the indexOf of $i, which exists in array to use {$rowF[$indexOf]['b_booker'].}
+			   $Next_i=$indexOf+1;  //the position of first found +1
+			   $t=$i+1; // next hour
+			   
+			   if( $i==$bIntervals[$Next_i] ){  //if have duplicate = Reserved/Reserved
+					//$t=$i+1; // next hour -delete?? as it has duplicate line
+					//$indexOf=array_search($i,$bIntervals); // find the indexOf of $i, which exists in array to use {$rowF[$indexOf]['b_booker'].}    //-delete?? as it has duplicate line
+					//DisplayReserved(Si,$indexOf,$result);
+					echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <a href='/?delete=on&unix=$timestampUnix'><img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></a></h6>"; //  we have  to change <p>  to <h6> as it caused cool option to hide taken dates
+				       //second row
+					$Next_indexOf=$indexOf+1; //Take next row from Active Record result
+					echo "<h6 class='taken'> Reserved =>  ".$i.  ".30-" .$t. ".00   <span class='bookLink'>Activity->  ".    $result[$Next_indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>"; //  we have  to change <p>  to <h6> as it caused cool option to hide taken dates
+				   }	//End if($i==$bIntervals[$Next_i] ){  //if have duplicate
+
+                if( $i!=$bIntervals[$Next_i] ){  //if DOES NOT have duplicate
+				                if($result[$indexOf]->dbook_quarters==0){ // if it is for 9.00-9.30 = Reserved/Free
+								   echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+								       //second Free Row
+								   echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".30-" .$t. ".00        <span class='bookLink'  id='' > book it</span>   </h6>";
+                                   echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+								}// END if($result[$indexOf]->dbook_quarters==0)
+								
+								if($result[$indexOf]->dbook_quarters==3){ // if it is for 9.30-10.00 = Free/Reserved
+								   echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".00-" .$i. ".30        <span class='bookLink'  id='' > book it</span>   </h6>";
+                                   echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+								       //second Reserved
+								   echo "<h6 class='taken'> Reserved =>  ".$i.  ".30-" .$t. ".00   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+								       
+								}// END else if($result[$indexOf]->dbook_quarters==3){ // if it is for 9.30-10.00 = Free/Reserved
+                 }	//end if( $bIntervals[$i]!=$bIntervals[$Next_i] ){  //if DOES NOT have duplicate
+
+				 
+              }  // End if(in_array($i, $bIntervals))
+			  
+			  
+			  
+			  
+			  else   //if i does not exist in array (i.e it is FREE)
+			  { 
+				$tt=$i+1;					   
+				echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".00-" .$i. ".30        <span class='bookLink'  id='' > book it</span>   </h6>";
+                echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+				   //second Fee Row
+				 echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".30-" .$tt. ".00        <span class='bookLink'  id='' > book it</span>   </h6>";
+                 echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+		      } //End Else
+			  
+			  
+			  
+			  
+						  } //End for($i=9; $i<18; $i++)
+
+	  // End Inject
+
+// END CORE algorithm------------------------------------------------------------------------
+
+
+
+
+
+?>
+
+
+
+
+
+
 
 
 
@@ -305,6 +437,99 @@ var selectedDate = "";
 function SetJsDate_toPhpDAte(jsString){
 }
 // END SetJsDate_to PhpDAte
+
+
+
+
+
+
+
+
+
+
+//Start click on "book it" in SQL results display - just show name to book accordition
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+$(document).on("click", '.bookLink2', function() {      //for newly generated                                                                             
+
+  
+     ShowNameFieldsAccordition( $(this)  ); //show/hide name fields in accordition
+     //sendAjaxSQLInsert($(this)); //sends Ajax Insert request to Php_AjaxHandler/insertTAble.php  to insert data
+});
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+//
+//END  click on "book it" in SQL results display-just show name to book accordition
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ShowNameFieldsAccordition
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **  
+ function ShowNameFieldsAccordition(ttt){
+    
+
+                ttt.next("p").slideToggle(500)
+               .siblings("p:visible").slideUp(1400); 
+
+     //$(".nnn").not(this).hide(1400);  //.not(this)
+
+     //ttt.next("p")./*slideDown*/slideToggle(300)   /*.nextAll("p").hide(400)*/   /*.siblings('.n').slideUp(1400);*/             //siblings(".nnn").slideUp(1400);  
+    // ttt.nextAll('.nnn').not('.first').slideUp(1400);     //nextAll(".nnn").hide(300);
+      
+
+
+          
+ 
+  
+
+               /*$(this).next("p").slideToggle(500)
+               .siblings("p:visible").slideUp(1400);  */
+
+  
+  }
+
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+// END  showNameFields()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }); // end ready 
 </script>
 
