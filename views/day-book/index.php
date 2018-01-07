@@ -52,12 +52,12 @@ $this->params['breadcrumbs'][] = $this->title;
 </br></br></br></br></br></br>
 
 <style>
-/*Class for taken and free dates*/
-.taken{background-color:red;border:solid red 2px;color:white;padding:1px;}
-.free{background-color:green;color:white;padding:3px;cursor:pointer;}
+/*Class for taken and free dates     #00e600*/
+.taken{background-color:#ff471a;border:solid red 2px;color:white;padding:2em;}
+.free{background-color:#5cb85c ;color:white;padding:2em;cursor:pointer;}
 
 /*Link to book a date*/
-.bookLink{font-size:0.6em; text-decoration: underline;}
+.bookLink{font-size:1em; text-decoration: underline;}
 </style>
 
 
@@ -114,14 +114,62 @@ echo "</br>";
 
 
 
-/*function DisplayReserved(Si,$indexOf,$result){
-echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+function DisplayReserved($iterator,$nextIterator,$indexOf,$result,$minutesStart,$minutesEnd){ 
+ // 1)$iterator==$i (calculated in for(){} loop), 2)$nextIterator==$t==$i+1 (for those who has duplicate),3)$indexOf==position 4)$result==Act record array result from Controller
+ //5))$minutesStart==30 OR 00  6)$minutesEnd== 30 OR 00
+ 
+    //if $nextIterator/$t called as Null (we DON"T need $nextIterator/$t   for 1st Row calling(i.e 9.00-9.30)), we Do NEED it for the second row(9.30-10.00)
+    if( is_null($nextIterator) ) {$nextIterator=$iterator;} else {$nextIterator=$nextIterator;}
+	
+  echo "<h6 class='taken'> Reserved =>  ".$iterator.  "."   .$minutesStart.  "-" .$nextIterator. "."   .$minutesEnd.   "<span class='bookLink'> Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+//echo "<h6 class='taken'> Reserved =>  ".$iterator.  ".00-" .$iterator. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
 
-}*/
+}
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
 
 
 
 
+
+
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+
+                                                                                  
+function DisplayFree($iterator,$nextIterator,$indexOf,$result,$minutesStart,$minutesEnd)
+ { 
+ 
+ }
+
+
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
 // START CORE algorithm------------------------------------------------------------------
        $bIntervals=array();// array for intervals available 
 
@@ -132,7 +180,7 @@ echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='boo
       print_r($bIntervals);
 	  
 	  // sTART Inject---
-	  for($i=9; $i<18; $i++){
+	  for($i=6; $i<23; $i++){
              //if time exists in array  $bIntervals, displays taken
              if(in_array($i, $bIntervals))
 			 { 
@@ -143,26 +191,31 @@ echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='boo
 			   if( $i==$bIntervals[$Next_i] ){  //if have duplicate = Reserved/Reserved
 					//$t=$i+1; // next hour -delete?? as it has duplicate line
 					//$indexOf=array_search($i,$bIntervals); // find the indexOf of $i, which exists in array to use {$rowF[$indexOf]['b_booker'].}    //-delete?? as it has duplicate line
-					//DisplayReserved(Si,$indexOf,$result);
-					echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <a href='/?delete=on&unix=$timestampUnix'><img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></a></h6>"; //  we have  to change <p>  to <h6> as it caused cool option to hide taken dates
+					DisplayReserved($i,null,$indexOf,$result, '00',  '30'); //1st Row  //DisplayReserved($iterator,$nextIterator,$indexOf,$result,$minutesStart,$minutesEnd)
+					//!!!!replaced by DisplayReserved() //echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <a href='/?delete=on&unix=$timestampUnix'><img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></a></h6>"; //  we have  to change <p>  to <h6> as it caused cool option to hide taken dates
 				       //second row
 					$Next_indexOf=$indexOf+1; //Take next row from Active Record result
-					echo "<h6 class='taken'> Reserved =>  ".$i.  ".30-" .$t. ".00   <span class='bookLink'>Activity->  ".    $result[$Next_indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>"; //  we have  to change <p>  to <h6> as it caused cool option to hide taken dates
+					DisplayReserved($i,$t,$indexOf+1,$result, '30',  '00');  //2nd Row //Reserved second Row
+					//!!!!replaced by DisplayReserved() //echo "<h6 class='taken'> Reserved =>  ".$i.  ".30-" .$t. ".00   <span class='bookLink'>Activity->  ".    $result[$Next_indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>"; //  we have  to change <p>  to <h6> as it caused cool option to hide taken dates
 				   }	//End if($i==$bIntervals[$Next_i] ){  //if have duplicate
+				   
 
                 if( $i!=$bIntervals[$Next_i] ){  //if DOES NOT have duplicate
 				                if($result[$indexOf]->dbook_quarters==0){ // if it is for 9.00-9.30 = Reserved/Free
-								   echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+								   DisplayReserved($i,null,$indexOf,$result, '00',  '30'); //Reserved 1st Row
+								   //!!!!replaced by DisplayReserved()  //echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
 								       //second Free Row
 								   echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".30-" .$t. ".00        <span class='bookLink'  id='' > book it</span>   </h6>";
-                                   echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+                                   echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your agenda <input class='nameX' type='text'size='7' placeholder='agenda...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
 								}// END if($result[$indexOf]->dbook_quarters==0)
+								
 								
 								if($result[$indexOf]->dbook_quarters==3){ // if it is for 9.30-10.00 = Free/Reserved
 								   echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".00-" .$i. ".30        <span class='bookLink'  id='' > book it</span>   </h6>";
-                                   echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+                                   echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your agenda <input class='nameX' type='text'size='7' placeholder='agenda...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
 								       //second Reserved
-								   echo "<h6 class='taken'> Reserved =>  ".$i.  ".30-" .$t. ".00   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+								   DisplayReserved($i,$t,$indexOf,$result, '30',  '00');  //2nd Row //Reserved second Row
+								   //!!!!replaced by DisplayReserved() // echo "<h6 class='taken'> Reserved =>  ".$i.  ".30-" .$t. ".00   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
 								       
 								}// END else if($result[$indexOf]->dbook_quarters==3){ // if it is for 9.30-10.00 = Free/Reserved
                  }	//end if( $bIntervals[$i]!=$bIntervals[$Next_i] ){  //if DOES NOT have duplicate
@@ -177,10 +230,10 @@ echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='boo
 			  { 
 				$tt=$i+1;					   
 				echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".00-" .$i. ".30        <span class='bookLink'  id='' > book it</span>   </h6>";
-                echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+                echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your agenda <input class='nameX' type='text'size='7' placeholder='agenda...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
 				   //second Fee Row
 				 echo "<h6 class='free accordition bookLink2'> Free =>  ".$i.  ".30-" .$tt. ".00        <span class='bookLink'  id='' > book it</span>   </h6>";
-                 echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your name <input class='nameX' type='text'size='7' placeholder='name...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
+                 echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your agenda <input class='nameX' type='text'size='7' placeholder='agenda...'/> <button type='button' class='bookFinal' id='tbTime-$i&d-$unix&tableId-$table&timeNormal-$timeNormal' > OK </button>  </p>";
 		      } //End Else
 			  
 			  
@@ -191,6 +244,9 @@ echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='boo
 	  // End Inject
 
 // END CORE algorithm------------------------------------------------------------------------
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
 
 
 
@@ -236,8 +292,9 @@ echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='boo
             'dbook_ip',
             'dbook_bookedDate',
             'dbook_bookedUnix',
-            // 'dbook_quarters',
-            // 'dbook_whenBooked',
+			'dbook_intervals',   //hours 8-20
+            'dbook_quarters',   // 0 OR 3 (9.00-9.30 or 9.30-10.00)
+            'dbook_agenda',     // your plans
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
