@@ -9,6 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use app\models\SearchFormDayBook; //Mine model for input form
+
 /**
  * DayBookController implements the CRUD actions for DayBook model.
  */
@@ -51,32 +53,24 @@ public $timestamp;// delete?????????????????????????????????
     {
 
 
+//My Day Book Search input form init
+$ModelDayBookkk=new SearchFormDayBook();
+$ModelDayBookkk->q="efefe";
 
-
-// START GRIDVIEW------
-				$dataProvider = new ActiveDataProvider([
-				    'query' => DayBook::find(),
-				]);
-// END GRIDVIEW--------
-
-
-
-
-
-
+//my funct
 
 // *******************
 // *******************
 //                  **
 //Start Function MydatePrepare (convert 4-Jan-Thu-2018 to UnixTime ) // False it just change {4-Jan-Thu-2018} to {1-4-2018} which is OK format to get UnixStamp from it--------------------
-function MydateToUnix ($obj) {
+function MydatePrepare($obj) {
 $dateArray=explode("-", $obj);    // {4-Jan-Thu-2018} split/explode to Array by "-"
 $objectMonth = ['Jan' ,'Feb' ,'Mar' ,'Apr' ,'May' , 'Jun' , 'Jul' ,'Aug' ,'Sep' ,'Oct' ,'Nov', 'Dec']; // Month
 $position=array_search($objectMonth[1]   ,$objectMonth); // returns 1-12
 $position=$position; // month 1-2 , not 0-11
 
 
-$dateFormat=$position     .'-'.    $dateArray[0]    .'-'.     $dateArray[3];     // Make format 4/1/2016
+$dateFormat=        $dateArray[0]   .'-'. $position .'-'.    $dateArray[3];     // Make format 4/1/2016 // Format day/month/year !!!!!!!!
 //$timestamp = strtotime(   $dateFormat );   // get Unix Time from  4/1/2016 // format 'month/day/2018' !!!!!!!!!!!!!!!!!!!!!!1   // Deactivate just this one
 
 return  $dateFormat  /* $timestamp */ ;  // returns {1-4-2018} 
@@ -93,27 +87,93 @@ return  $dateFormat  /* $timestamp */ ;  // returns {1-4-2018}
 
 
 
+
+
+// THis  Runs on Load-----------------------------------------
+//date_default_timezone_set('UTC');    //('europe/kiev')
+
+if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing    
+            {
+             //echo "Exist, use set date";
+             //$dateX=Yii::$app->getRequest()->getQueryParam('myUnix'); 
+             $timeX=Yii::$app->getRequest()->getQueryParam('myUnix');
+             } else
+                   {
+                    // if Unix dateTime does not exist in URL, we process the current day and convert it to Unix with function MydateToUnix($dateX--FALSE
+                   // echo "DOES NOT Exist, use today";
+                    $dateX=date('j-M-D-Y');  // today day
+                    //$t=MydatePrepare($dateX);
+                    $timeX=$dateX;
+                    }
+
+
+
+$time=MydatePrepare($timeX);    //change {4-Jan-Thu-2018} to {1-4-2018} which is OK format to get UnixStamp from it
+$timestampUnix = strtotime(   $time);  // Get Unix Stamp
+
+
+// Run SQL SELECT
+ $result = DayBook::find()   ->orderBy ('dbook_id ASC')  /*->limit('5')*/ ->where([   'dbook_user' => Yii::$app->user->identity->username, /* 'mydb_id'=>1*/   ]) /* ->andWhere(['between', 'mydb_date', $startDAte, $endDAte   ])  */    /*->andFilterWhere(['like', 'supp_date', $todayMonth])*/  ->andFilterWhere(['like', 'dbook_bookedUnix', $timestampUnix])    ->all(); 
+
+
+// END THis  Runs on Load------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// START GRIDVIEW------
+				$dataProvider = new ActiveDataProvider([
+				    'query' => DayBook::find(),
+				]);
+// END GRIDVIEW--------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //----------------------
 $model = new DayBook();  // creates model for SQL TAble
 
 
 
-//it will be used for << >>
+//it will be used for << >>   ???
 
-if ($model->load(Yii::$app->request->post()) ) {  // if u click the button-----------------------
+if ($model->load(Yii::$app->request->post()) ) {  // if u click the button REDO!!!!!!!!!-----------------------
 
-if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing
+if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing    
             {
              echo "Exist, use set date";
              //$dateX=Yii::$app->getRequest()->getQueryParam('myUnix'); 
              $t=Yii::$app->getRequest()->getQueryParam('myUnix');
              } else
                    {
-                    // if Unix dateTime does not exist in URL, we process the current day and convert it to Unix with function MydateToUnix($dateX
+                    // if Unix dateTime does not exist in URL, we process the current day and convert it to Unix with function MydateToUnix($dateX--FALSE
                     echo "DOES NOT Exist, use today";
                     $dateX=date('j-M-D-Y');  // today day
-                    $t=MydatePrepare($dateX);
-                    
+                    //$t=MydatePrepare($dateX);
+                    $t=$dateX;
                     }
 
 /*
@@ -162,6 +222,10 @@ return $this->redirect(['/day-book/index'   ,  'myUnix' =>  $t    ,]);   // redi
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'model'=>$model,
+            'timestampUnix'=>$timestampUnix, //just for test, Erase later+ from View
+            'time' => $time,
+            'result'=> $result,
+			'ModelDayBookkk'=>$ModelDayBookkk,
         ]);
 //END Final Render
 
@@ -350,6 +414,111 @@ return $this->redirect(['/day-book/index'   ,  'myUnix' =>  $t    ,]);   // redi
 // **                                                                                  **
 // **************************************************************************************
 // **************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+
+
+	public function actionInsertmy (){
+	
+	
+	
+	
+	
+	//check if not taken-------------------------------
+	function CheckIfNonTaken(){
+		 $current = DayBook::find()   ->orderBy ('dbook_id DESC')  /*->limit('5')*/    /* ->where([   'supp_user' => Yii::$app->user->identity->username, 'mydb_id'=>1   ]) */     /* ->andWhere(['between', 'mydb_date', $startDAte, $endDAte   ])  */ ->andFilterWhere(['like', 'dbook_bookedUnix', Yii::$app->getRequest()->getQueryParam('unix')  ])    ->andFilterWhere(['like', 'dbook_intervals', Yii::$app->getRequest()->getQueryParam('hour') ])  ->andFilterWhere(['like', 'dbook_quarters', Yii::$app->getRequest()->getQueryParam('quarter') ])  ->all(); 
+		if (empty ($current) ){
+			echo "Non-taken"; 
+			return true;
+		} else{
+		echo "Already taken"; 
+			return false;
+		}
+	} //end function CheckIfNonTaken(){
+	//End check if not taken-------------------------------
+	
+	
+	
+	
+	
+	//--------------------------------------------------------
+	function InsertMyRecord($f){
+	echo "Start -> ";
+	$ModelDayBook2=new DayBook();
+	$ModelDayBook2->dbook_user=Yii::$app->getRequest()->getQueryParam('booker'); // 
+	$ModelDayBook2->dbook_bookedUnix=Yii::$app->getRequest()->getQueryParam('unix'); // unix
+	$ModelDayBook2->dbook_intervals=Yii::$app->getRequest()->getQueryParam('hour'); // hour
+	$ModelDayBook2->dbook_quarters=Yii::$app->getRequest()->getQueryParam('quarter'); // quarter
+	$ModelDayBook2->dbook_agenda=Yii::$app->getRequest()->getQueryParam('agenda'); // quarter
+	
+	if ($ModelDayBook2->save(false)) {
+	echo "saved";
+	return $f->redirect (Yii::$app->urlManager->createUrl (['day-book/index','q'=>'success']));
+	
+	} else {echo "screwed";}
+
+    // return $this->redirect(['day-book/index']);
+	} // END function InsertMyRecord(){
+//-----------------------------------------------------------------	
+	
+	
+	
+	
+	//Core with functions
+	if(CheckIfNonTaken()){
+	InsertMyRecord($this);
+	}
+	//END Core with functions
+	
+	
+	 
+	}
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
