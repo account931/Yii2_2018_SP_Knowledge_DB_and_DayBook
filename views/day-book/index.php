@@ -5,6 +5,7 @@
 // JS << >>, calendar my Pick UP  is displayed in this file
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 
 use yii\widgets\ActiveForm;
@@ -62,6 +63,18 @@ $GLOBALS['unix'] = $timestampUnix; //as it is not seen in function in normal pas
 
 /*Link to book a date*/
 .bookLink{font-size:1em; text-decoration: underline;}
+
+
+/* Trash icon */
+.deleteMe{width:4%;}
+
+/* MOBILE Padding for right tables on mobile-makes a margin at bottom------------------------*/
+@media screen and (max-width: 600px){  /*480*/
+
+.deleteMe{width:10%;}
+}
+/* END Padding for right tables on mobile-makes a margin at bottom-------------------------*/
+
 </style>
 
 
@@ -183,9 +196,11 @@ function DisplayReserved($iterator,$nextIterator,$indexOf,$result,$minutesStart,
  
     //if $nextIterator/$t called as Null (we DON"T need $nextIterator/$t   for 1st Row calling(i.e 9.00-9.30)), we Do NEED it for the second row(9.30-10.00)
     if( is_null($nextIterator) ) {$nextIterator=$iterator;} else {$nextIterator=$nextIterator;}
-	
-  echo "<h6 class='taken'> Scheduled =>  ".$iterator.  "."   .$minutesStart.  "-" .$nextIterator. "."   .$minutesEnd.   " Activity-> <span class='bookLink' style='border:0.1em solid white;padding:0.4em; background:orange;'> ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-left:0.6em;cursor:pointer;' src='images/deleteww.png'/></h6>";
-//echo "<h6 class='taken'> Reserved =>  ".$iterator.  ".00-" .$iterator. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/deleteww.png'/></h6>";
+	 $idX=$result[$indexOf]->dbook_id;
+     echo "<h6 class='taken'> Scheduled =>  ".$iterator.  "."   .$minutesStart.  "-" .$nextIterator. "."   .$minutesEnd.   " Activity-></br> <span class='bookLink' style='border:0.1em solid white;padding:0.5em; background:orange;'> ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id='$idX'  style=' margin-left:0.8em;cursor:pointer;' src='images/deleteww.png'/>";
+	  //echo "</br>". Html::a('Test delete', Url::to(['day-book/delete',"id"=>$idX]), ['data-method' => 'POST']);
+	   echo "<h6>";
+   
 
 }
 // **                                                                                  **
@@ -850,6 +865,105 @@ $(document).on("click", '.bookFinal', function() {      //for newly generated
 //
 //END FormUrl_AndRedirect()  -> it forms the whole URL (90% takes from $this ID+ take input value with agenda) and makes js redirect
 
+
+
+
+
+
+
+
+
+//Start click on "delete" -> it forms the URL do actiondelete and redirects to it
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+$(document).on("click", '.deleteMe', function() {      //for newly generated                                                                             
+
+  RedirectToDeleteItem(  $(this) );
+ 
+});
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+//
+//END  click on "delete" -> it forms the URL do actiondelete and redirects to it
+
+
+
+
+
+
+
+//-----------------------------------------------
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+//Function tha makes redirection with POST/GET(from stackoverflow
+//The problem was that Yii2 didn't accept for safety reason, so I had to add field {<input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />}
+//Below field deisables Yii2 CSRF check, and you can call action from outer path
+
+   function url_redirect(options){
+                 var $form = $("<form />");
+                 
+                 $form.attr("action",options.url);
+                 $form.attr("method",options.method);
+                 
+                 for (var data in options.data)
+                 $form.append('<input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" /> <input type="hidden" name="'+data+'" value="'+options.data[data]+'" />');
+                  
+                 $("body").append($form);
+                 $form.submit();
+            }
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+//
+//---------------------------------------------------------			
+			
+         
+
+
+
+
+//Start click on "delete" -> it forms the URL do actiondelete and redirects to it
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     **
+function RedirectToDeleteItem(passedThis){
+		if (confirm("Sure to delete it?")) {
+		var thisID=passedThis.attr("id"); //alert(thisID);  //get the id of clicked
+		
+		//currentURL=window.location.href; // current url address
+	    var currentURL = window.location.href.split('?')[0]; //get the URL address without any $_GET['parmas']
+	    finalURL=currentURL+"?r=day-book/delete&id="+thisID; // current address+ $_GET['params']
+        alert(finalURL);
+	
+	    //$.redirect(currentURL  , {'r': 'day-book/delete', 'id': thisID});
+        //window.location = finalURL;
+		//myRedirect(finalURL, "id", thisID);
+	
+	
+	
+	    //start function url_redirect() to redict script to delete action
+            $(function(){
+                /*jquery statements */
+                url_redirect({url: finalURL,
+                  method: "post",
+                  data: {"s":"KnowledgeWalls"} //this line is anactive
+                 });
+            });
+        //END  function url_redirect() to redict script to delete action
+	
+
+	} else {
+	}
+
+}
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+//
+//END  click on "delete" -> it forms the URL do actiondelete and redirects to it
 
 
 
