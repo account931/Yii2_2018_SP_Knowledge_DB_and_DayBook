@@ -19,6 +19,7 @@ $this->title = 'Day Books';  // title
 $this->params['breadcrumbs'][] = $this->title;
 
 $GLOBALS['unix'] = $timestampUnix; //as it is not seen in function in normal pass from controler
+$GLOBALS['timeX'] = $timeX; //as it is not seen in function in normal pass from controler
 ?>
 
 
@@ -66,12 +67,12 @@ $GLOBALS['unix'] = $timestampUnix; //as it is not seen in function in normal pas
 
 
 /* Trash icon */
-.deleteMe{width:4%;}
+.deleteMe{width:3.5%;}
 
 /* MOBILE Padding for right tables on mobile-makes a margin at bottom------------------------*/
 @media screen and (max-width: 600px){  /*480*/
 
-.deleteMe{width:10%;}
+.deleteMe{width:9%;}
 }
 /* END Padding for right tables on mobile-makes a margin at bottom-------------------------*/
 
@@ -172,6 +173,7 @@ if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exi
 //UnixTime from Controller, used to form <a href>
 echo "---> ". $timestampUnix ."</br>".  $time;  
 echo "</br>";
+echo "my--->". $GLOBALS['timeX'] ."</br>"; //from Controller
 ?>
 
 <?php 
@@ -197,7 +199,7 @@ function DisplayReserved($iterator,$nextIterator,$indexOf,$result,$minutesStart,
     //if $nextIterator/$t called as Null (we DON"T need $nextIterator/$t   for 1st Row calling(i.e 9.00-9.30)), we Do NEED it for the second row(9.30-10.00)
     if( is_null($nextIterator) ) {$nextIterator=$iterator;} else {$nextIterator=$nextIterator;}
 	 $idX=$result[$indexOf]->dbook_id;
-     echo "<h6 class='taken'> Scheduled =>  ".$iterator.  "."   .$minutesStart.  "-" .$nextIterator. "."   .$minutesEnd.   " Activity-></br> <span class='bookLink' style='border:0.1em solid white;padding:0.5em; background:orange;'> ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id='$idX'  style=' margin-left:0.8em;cursor:pointer;' src='images/deleteww.png'/>";
+     echo "<h6 class='taken'> Scheduled =>  ".$iterator.  "."   .$minutesStart.  "-" .$nextIterator. "."   .$minutesEnd.   " Activity-></br></br> <span class='bookLink' style='border:0.1em solid white;padding:0.5em; background:orange;font-size:1.2em;box-shadow: 6px 4px 5px red;border-radius:10px;'> ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id='$idX'  style=' margin-left:0.8em;cursor:pointer;' src='images/deleteww.png'/>";
 	  //echo "</br>". Html::a('Test delete', Url::to(['day-book/delete',"id"=>$idX]), ['data-method' => 'POST']);
 	   echo "<h6>";
    
@@ -231,6 +233,7 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
  //echo "--->>> ".$GLOBALS['unix']; // used for <a href> link
  $agenda=false; //not used
  $hour=$iterator; // used for <a href> link
+ $dateNorm=$GLOBALS['timeX'];// we get $timeX from Controller render; This is {9-Feb-Fri-2018}, we add this to id, to make possible to redict to the same date after insert
  //findin quarters (0||3)
  if($minutesStart=="00"){
  $quarter=0;
@@ -240,7 +243,7 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
  
  echo "<h6 class='free accordition bookLink23'> Free =>  ".$iterator.  "."   .$minutesStart.  "-" .$nextIterator.   "."    .$minutesEnd.       "<span class='bookLink'  id='' > schedule it</span>   </h6>";
  echo "<p style='display:none;margin-top:0.7em;background-color:;' class='nnn'>  Your agenda</br> <textarea rows='2' cols='50' placeholder='...'></textarea>
-  </br><button type='button' class='bookFinal' id='booker=$booker&unix=$timestampUnixZ&hour=$hour&quarter=$quarter' > OK </button>  </p>";
+  </br><button type='button' class='bookFinal' id='booker=$booker&unix=$timestampUnixZ&hour=$hour&quarter=$quarter&dateNormal=$dateNorm' > OK </button>  </p>";
 
   //<input class='nameX' type='text'size='7' placeholder='agenda...'/>
 /*
@@ -898,7 +901,7 @@ $(document).on("click", '.deleteMe', function() {      //for newly generated
 // **************************************************************************************
 // **************************************************************************************
 //                                                                                     **
-//Function tha makes redirection with POST/GET(from stackoverflow
+//Function tha makes redirection with POST/GET FOR DELETE action(from stackoverflow). used in RedirectToDeleteItem( )
 //The problem was that Yii2 didn't accept for safety reason, so I had to add field {<input type="hidden" name="_csrf" value="<?=Yii::$app->request->getCsrfToken()?>" />}
 //Below field deisables Yii2 CSRF check, and you can call action from outer path
 
