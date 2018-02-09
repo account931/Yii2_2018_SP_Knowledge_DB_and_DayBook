@@ -92,7 +92,7 @@ return  $dateFormat  /* $timestamp */ ;  // returns {1-4-2018}
 // THis  Runs on Load-----------------------------------------
 //date_default_timezone_set('UTC');    //('europe/kiev')
 
-if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing    
+if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL (10-Feb-Sat-2018), we take it without processing    
             {
              //echo "Exist, use set date";
              //$dateX=Yii::$app->getRequest()->getQueryParam('myUnix'); 
@@ -159,7 +159,7 @@ $model = new DayBook();  // creates model for SQL TAble
 
 
 //it will be used for << >>   ???
-
+//$t;
 if ($model->load(Yii::$app->request->post()) ) {  // if u click the button REDO!!!!!!!!!-----------------------
 
 if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing    
@@ -174,6 +174,7 @@ if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exi
                     $dateX=date('j-M-D-Y');  // today day
                     //$t=MydatePrepare($dateX);
                     $t=$dateX;
+					//$_GET['myUnix']=$t;
                     }
 
 /*
@@ -223,7 +224,8 @@ return $this->redirect(['/day-book/index'   ,  'myUnix' =>  $t    ,]);   // redi
             'dataProvider' => $dataProvider,
             'model'=>$model,
             'timestampUnix'=>$timestampUnix, //just for test, Erase later+ from View
-            'time' => $time,
+            'time' => $time, //passes  1-4-2018 // //just for test, Erase later+ from View
+			'timeX' => $timeX, //passes  {4-Jan-Thu-2018} // we pass it to form URL to insert new record, we need this param to redirect the script to same date after insert
             'result'=> $result,
 			'ModelDayBookkk'=>$ModelDayBookkk,
         ]);
@@ -368,6 +370,8 @@ return $this->redirect(['/day-book/index'   ,  'myUnix' =>  $t    ,]);   // redi
      */
     public function actionDelete($id)
     {
+	     //my add
+		//$this->enableCsrfValidation = false;//отключаем проверку Csrf 
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -469,9 +473,10 @@ return $this->redirect(['/day-book/index'   ,  'myUnix' =>  $t    ,]);   // redi
 	$ModelDayBook2->dbook_quarters=Yii::$app->getRequest()->getQueryParam('quarter'); // quarter
 	$ModelDayBook2->dbook_agenda=Yii::$app->getRequest()->getQueryParam('agenda'); // quarter
 	
+	
 	if ($ModelDayBook2->save(false)) {
 	echo "saved";
-	return $f->redirect (Yii::$app->urlManager->createUrl (['day-book/index','q'=>'success']));
+	return $f->redirect (Yii::$app->urlManager->createUrl (['day-book/index','q'=>'success', 'myUnix'=> Yii::$app->getRequest()->getQueryParam('dateNormal')]));//'myUnix'=>
 	
 	} else {echo "screwed";}
 
