@@ -66,8 +66,9 @@ $ModelDayBookkk->q="efefe";
 function MydatePrepare($obj) {
 $dateArray=explode("-", $obj);    // {4-Jan-Thu-2018} split/explode to Array by "-"
 $objectMonth = ['Jan' ,'Feb' ,'Mar' ,'Apr' ,'May' , 'Jun' , 'Jul' ,'Aug' ,'Sep' ,'Oct' ,'Nov', 'Dec']; // Month
-$position=array_search($objectMonth[1]   ,$objectMonth); // returns 1-12
-$position=$position; // month 1-2 , not 0-11
+// Mega Error $position=array_search($objectMonth[1]   ,$objectMonth); // returns 1-12
+$position=array_search($dateArray[1]  ,$objectMonth); // returns 1-12
+$position=$position + 1; // month 1-2 , not 0-11
 
 
 $dateFormat=        $dateArray[0]   .'-'. $position .'-'.    $dateArray[3];     // Make format 4/1/2016 // Format day/month/year !!!!!!!!
@@ -136,8 +137,13 @@ $timestampUnix = strtotime(   $time);  // Get Unix Stamp
 
 // START GRIDVIEW------
 				$dataProvider = new ActiveDataProvider([
-				    'query' => DayBook::find(),
-				]);
+				    //'query' => DayBook::find(),							
+					  'query' => DayBook::find()->where(['dbook_user' => Yii::$app->user->identity->username]),
+                    //'pagination' => ['pageSize' => 4,],
+                    'sort'=> ['defaultOrder' => ['dbook_id'=>SORT_DESC]],
+
+					
+					]);
 // END GRIDVIEW--------
 
 
