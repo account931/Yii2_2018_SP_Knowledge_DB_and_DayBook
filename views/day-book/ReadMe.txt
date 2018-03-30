@@ -6,3 +6,5 @@ Day book
 4.Insert (adding new record): function displayTaken () forms ID of Add button with $_GET [' '] params (user, unix, hour, quarter).
 When clicking the add button, JS takes its ID, gets texarea input and concatenate it all to URL to DayBookController/actionInsert with $_GET [' '] params (user, unix, hour, quarter, text itself)  and makes Redirect to this URL.
 5. DayBookController/actionInsert makes sure that SELECT with given $_GET params in Null and creates a new record.
+
+6. "Add" (insert) click button is handled with JS, it redirects to actionInsert with relevant params. The same goes with DELETE
