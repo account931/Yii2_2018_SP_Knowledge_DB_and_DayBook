@@ -52,7 +52,7 @@ echo "</br>";
  //echo Html::a( "Add new", ['/supp/create', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'add',] ); 
            //echo '</div>'; 
 echo "</br>";
-echo Html::a('New Entry ++', ['create'], ['class' => 'btn btn-success']);
+if(!Yii::$app->user->isGuest){  echo Html::a('New Entry ++', ['create'], ['class' => 'btn btn-success']); }
 echo "</br>";
 
 //1111111111111111111111111
@@ -346,15 +346,20 @@ $days_in_prev_month=cal_days_in_month(CAL_GREGORIAN,$PrevMonth2,$PrevYear);//  n
 
 
 
+?>
 
 
 
+<!-- Bootstrap Collapse for GridView, show just button, gridview is hidden -->
+<br>
+<button data-toggle="collapse" data-target="#myHideCollapse" class="btn btn-danger">Show GridView</button>
+<div id="myHideCollapse" class="collapse">
 
-
-		//GridView  
-		// *******************************************************************
-		// *******************************************************************
-		//                                                                  **  
+<?php
+	//GridView  
+	// *******************************************************************
+	// *******************************************************************
+	//                                                                  **  
 
 echo "</br></br><h2 class='red'>View GridView</h2>";  
 				echo GridView::widget([
@@ -374,10 +379,15 @@ echo "</br></br><h2 class='red'>View GridView</h2>";
 				    ['class' => 'yii\grid\ActionColumn'],
 				],
 			]); 
-		// **                                                               **
-		// *******************************************************************
-		// *******************************************************************
-		//End GridView
+	// **                                                               **
+	// *******************************************************************
+	// *******************************************************************
+	//End GridView
+?>
+
+
+</div><!-- END  id="myHideCollapse" class="collapse" -->
+<!-- END Bootstrap Collapse for Gridview -->
 
 
 
@@ -388,8 +398,7 @@ echo "</br></br><h2 class='red'>View GridView</h2>";
 
 
 
-
-
+<?php
 } 
 // **                                                                                  **
 // **************************************************************************************
