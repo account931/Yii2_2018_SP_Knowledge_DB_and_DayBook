@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 
 /* @var $model app\models\SupportData */
 
-$this->title = 'Support DataBase';
+$this->title = 'Support CRs DataBase';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -103,7 +103,7 @@ echo Collapse::widget([
                              </br>
                              You may modify the following file to customize its content:  
                              </br>
-                             <code>$line</code></p>     ",
+                             <code>/* $line */  waze.zzz.com.ua/support/views/support-data/index.php</code></p>     ",
             // to  be  this  block open  by  default   de  comment  the  following 
             /*'contentOptions' => [
                 'class' => 'in'
@@ -147,7 +147,7 @@ echo Collapse::widget([
 			 echo Html::img(Yii::$app->getUrlManager()->getBaseUrl().'/images/plus.png' , $options =["id"=>"sx","marginleft"=>"3%","class"=>"sunimg","width"=>"9%","alt"=>"click","title"=>"click to add a  new  one"] );
 			 echo Html::img(Yii::$app->getUrlManager()->getBaseUrl().'/images/addarrow.gif' , $options = ["id"=>"sx","margin-left"=>"3%","class"=>"sunimg","width"=>"12%","title"=>"click to add a  new  one"] ); ?>
 
-			<span id="sx" style="cursor:pointer;"><?= Html::encode("Add an issue") ?></span>
+			<span id="sx" style="cursor:pointer;"><?= Html::encode("Add a new CR") ?></span>
 
  </div>
 
@@ -166,7 +166,7 @@ echo Collapse::widget([
 
 
 </br>
-<!---------flash if Sewarch word <4------------>
+<!---------flash if Search word <4------------>
 <?php $nn=Yii::$app->session->getFlash('searchFail');
 
 
@@ -212,7 +212,7 @@ if (Yii::$app->session->hasFlash('savedItemZ')){echo Alert::widget([
 
 <!-------------------------Form-------------------------------------->
 <div id="formS" style="display:none; background:;padding:30px;"  class=' btn-success';> <!--Bootstrap inject  btn-->
-<h1>Submit a new issue </h1>
+<h1>Add a new CR </h1>
 
      <?= $this->render('_form', [
         'model' => $model,
@@ -251,7 +251,7 @@ if (Yii::$app->session->hasFlash('savedItemZ')){echo Alert::widget([
 
 
 
-<h1>DataBase</h1>
+<h1>CRs List</h1>
 <!----------------Start PageLinker--------------------------------->
 <?php
 // Start 
@@ -346,6 +346,9 @@ echo LinkPager::widget([
 
 
 
+<!-- Bootstrap Collapse for GridView, show just button, gridview is hidden -->
+<button data-toggle="collapse" data-target="#myHideCollapse" class="btn btn-danger">Show GridView</button>
+<div id="myHideCollapse" class="collapse">
 
 <!---------------------------GridView---------------->
     <?= GridView::widget([
@@ -367,6 +370,8 @@ echo LinkPager::widget([
     ]); ?>
 <!------------------------END GridView------------------>
 
+</div><!-- END  id="myHideCollapse" class="collapse" -->
+<!-- END Bootstrap Collapse for Gridview -->
 
 
 

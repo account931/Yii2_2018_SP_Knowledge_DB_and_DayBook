@@ -31,6 +31,27 @@ use app\models\MergeUsers;
 
 
 
+
+
+
+
+
+
+<?php
+// Start if  Person is  LOGGED-------
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     ** 
+    if(!Yii::$app->user->isGuest){
+?>
+
+
+
+
+
+
+
+
 <h1>Merge</h1>
 <?php echo Html::a( "Return back", ['/support-data/index', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'Resistration',] ); ?>
 <!----------------Start-------------------------------->
@@ -48,7 +69,7 @@ use app\models\MergeUsers;
    echo "<div class='merge'>";
 echo '<img style="width:8%;" src="https://s.pfst.net/2011.06/69277782305f3dab8142f6801143f1937753c4bd2b_b.jpg"/></br></br>';
 
-   echo "<table style='padding: 0 50px 0 50px;'>";
+   echo "<table  class='table table-responsive table-condensed'>";
   foreach ($modelPageLinker as $model) {
 
     //echo "<p style='cursor:pointer;'><img src='images/check.png' style='width:3%;cursor:pointer;'/> ".$model->m_user.  " =>".  $model->m_points.  "</p>";
@@ -206,6 +227,65 @@ if (Yii::$app->session->hasFlash('savedItemFail')){echo Alert::widget([
 // **************************************************************************************
 // **************************************************************************************         
 // END  
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php   
+} 
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************
+// END  if  Person is  LOGGED
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Start if  Person is  not  logged
+// **************************************************************************************
+// **************************************************************************************
+//                                                                                     ** 
+    else {
+           echo' </br></br><div  style="border:solid black 1px;padding:3%;display:inline-block">';
+           echo Html::a( "LOG IN FIRST", ['/site/login', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
+           echo '</div>'; 
+         }
+
+// **                                                                                  **
+// **************************************************************************************
+// **************************************************************************************         
+// END if  Person is  not  logged
 ?>
 
 
