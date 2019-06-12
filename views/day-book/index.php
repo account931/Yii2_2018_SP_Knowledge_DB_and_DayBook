@@ -30,9 +30,10 @@ $GLOBALS['timeX'] = $timeX; //as it is not seen in function in normal pass from 
 
     <?php echo Html::img(Yii::$app->getUrlManager()->getBaseUrl().'/images/datetime.png' , $options = ["margin-left"=>"3%","class"=>"sunimg","width"=>"18%",] ); ?>
 
-   </br></br><p>
-        <?= Html::a('Create Day Book', ['create'], ['class' => 'btn btn-success']) ?>  <!--- Create new---->
-   </p> 
+     <br><br>
+	 <p>
+        <?= Html::a('Create Day Entry', ['create'], ['class' => 'btn btn-success']); ?>  <!--- Create new---->
+     </p> 
 
 
 
@@ -53,9 +54,9 @@ $GLOBALS['timeX'] = $timeX; //as it is not seen in function in normal pass from 
 
 
 <!-----------------------------------------------------------START FORM---------------------------------------------->
-</br></br><hr style="width:60%;">
+<hr style="width:60%;">
 <!--</br><hr style="width:80%;">-->
-</br></br></br></br></br></br>
+
 
 <style>
 /*Class for taken and free dates     #00e600*/
@@ -120,12 +121,14 @@ $GLOBALS['timeX'] = $timeX; //as it is not seen in function in normal pass from 
 //Form the date in input value, if there's value in URL we take it 
 if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exist in URL, we take it without processing  
 {
- $d=Yii::$app->getRequest()->getQueryParam('myUnix');
-}else{  
+     $d = Yii::$app->getRequest()->getQueryParam('myUnix');
+} else {  
 
- if($model->dbook_bookedDate==''){
- $d=date('j-M-D-Y'  /* ,strtotime("-1 days")*/);  // <!--date('d.m.Y',strtotime("-1 days"));-->
- }else { $d=$model->dbook_bookedDate;}
+     if($model->dbook_bookedDate==''){
+         $d = date('j-M-D-Y'  /* ,strtotime("-1 days")*/);  // <!--date('d.m.Y',strtotime("-1 days"));-->
+     } else { 
+         $d = $model->dbook_bookedDate;
+     }
  }
  //END Form the date in input value, if there's value in URL we take it 
 ?>
@@ -147,14 +150,20 @@ if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exi
 <?php $form = ActiveForm::begin(); ?>
 
 <?= $form->field($model, 'dbook_bookedDate')->textInput(['value'=>$d , 'id' => 'myDateInputDayBook']   ) ?>
-       
-<input type="button" value="<<" id="prevDay"/>  <input type="button" value=" Calendar" id="calendarPick"/>  <input type="button" value=">>" id="nextDay"/> </br></br>
+
+<!-- Calendar buttons -->       
+<input type="button" value="<<" id="prevDay" class="btn btn-success"/>  
+<input type="button" value=" Calendar" id="calendarPick" class="btn btn-danger"/>  
+<input type="button" value=">>" id="nextDay" class="btn btn-success"/> 
+<br><br>
     
+	<!--
     <div class="form-group">
          <?= Html::submitButton($model->isNewRecord ? '<<' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
          <?= Html::submitButton($model->isNewRecord ? 'Create->False' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
          <?= Html::submitButton($model->isNewRecord ? '>>' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
      </div>
+	 -->
 
  <?php ActiveForm::end(); ?>
 
@@ -171,18 +180,19 @@ if( Yii::$app->getRequest()->getQueryParam('myUnix') )  // if Unix dateStamp exi
 
 <?php 
 //UnixTime from Controller, used to form <a href>
-echo "---> ". $timestampUnix ."</br>".  $time;  
-echo "</br>";
-echo "my--->". $GLOBALS['timeX'] ."</br>"; //from Controller
+echo "<center><h3><b>". $GLOBALS['timeX'] ."</b></h3></center>"; //from Controller, i.e 12-Jun-Wed-2019
+echo "<span style='font-size:0.6em;'>unix " . $timestampUnix . " = " .  $time . "</span>";  //time in UnixStamp(1560283200) + date in format (12-6-2019)
+echo "<br>";
+
 ?>
 
 <?php 
       //delete, just test
-      foreach ($result as $model) 
+      /*foreach ($result as $model) 
       {
-      echo $model->	dbook_agenda;
-      echo "</br>";
-      }
+          echo $model->	dbook_agenda;
+          echo "</br>";
+      } */
       //delete, just test
 
 
@@ -281,12 +291,12 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
        $bIntervals=array();// array for intervals available 
 
 		foreach($result as $ss){
-                             array_push($bIntervals,$ss->dbook_intervals);
-                             }
+            array_push($bIntervals,$ss->dbook_intervals);
+        }
 
-      print_r($bIntervals);
+        //var_dump($bIntervals);
 	  
-	  // sTART Inject---
+	  // START Inject---
 	  for($i=6; $i<23; $i++){
              //if time exists in array  $bIntervals, displays taken
              if(in_array($i, $bIntervals))
@@ -392,9 +402,16 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
 </br><hr style="width:60%;">
 </br><hr style="width:80%;">
 </br><hr style="width:80%;">
-<center><h2> GridView </h2></center>
+<!--<center><h2> GridView </h2></center>-->
 
 
+
+
+
+
+<!-- Bootstrap Collapse for GridView, show just button, gridview is hidden -->
+<button data-toggle="collapse" data-target="#myHideCollapse" class="btn btn-danger">Show GridView</button>
+<div id="myHideCollapse" class="collapse">
 
 
 
@@ -422,7 +439,8 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
 
 <!-----------------------------------------------GRIDVIEW------------------------------>
 
-
+</div><!-- END  id="myHideCollapse" class="collapse" -->
+<!-- END Bootstrap Collapse for Gridview -->
 
 
 
@@ -446,7 +464,7 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
 //                                                                                     ** 
     else {
            echo' <div  style="border:solid black 1px;padding:3%;display:inline-block">';
-            echo Html::a( "LOG IN FIRST </br>to view the data", ['/site/login', 'traceURL' => "logTime",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
+            echo Html::a( "LOG IN FIRST </br>to view the data", ['/site/login', 'traceURL' => "daybook",   ] /* $url = null*/, $options = ['title' => 'Login',] ); 
             echo '</div>'; 
          }
 // **                                                                                  **
@@ -455,7 +473,6 @@ function DisplayFree($iterator,$nextIterator,$minutesStart,$minutesEnd){
 // END if  Person is  not  logged
 
 ?>
-
 
 
 
