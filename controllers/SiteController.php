@@ -116,6 +116,15 @@ public $v_pcs; //  Confirm deletion ;
 
 
 
+
+//Injected History -1 -> if you login from Day Book (day-book/index), it takes u back after authentication
+	if (Yii::$app->getRequest()->getQueryParam('traceURL')=="daybook"){
+    return $this->redirect(['day-book/index']);
+	}
+//End Injected History -1 -> if you login from Day Book (day-book/index), it takes u back after authentication
+
+
+
 //new
 //return $this->redirect(Yii::$app->request->referrer);
 //return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
@@ -133,6 +142,14 @@ public $v_pcs; //  Confirm deletion ;
         ]);
     }
 
+	
+	
+	
+	
+	
+	
+	
+	
     /**
      * Logout action.
      *
@@ -145,6 +162,12 @@ public $v_pcs; //  Confirm deletion ;
         return $this->goHome();
     }
 
+	
+	
+	
+	
+	
+	
     /**
      * Displays contact page.
      *

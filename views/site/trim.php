@@ -142,7 +142,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <!------------------------------------------INSTR  WORKING------------------------------->
-</br><div class="col-md-8 jumbotron"  id="hiddenInstructions" style="display:none;margin-top:2%;"> 
+</br><div class="col-md-8 jumbotron"  id="hiddenInstructions" style="display:none;margin-top:2%;border:1px solid black;"> 
 
 <!-- INSTRUCTIONS-->
 <p>
@@ -165,6 +165,8 @@ $this->params['breadcrumbs'][] = $this->title;
 </br>8.Character preceeded by dot without space (i.e ".word") - > <span style="color:red;"> being implemented</span>
 </br>9.Missing dot in the end of the sentence - > <span style="color:red;"> being implemented</span>
 </br>10.Pls know - > <span style="color:red;"> being implemented</span>
+</br>11.Double paragraphs - > <span style="color:red;"> being implemented</span>
+</br>12.Misplaced ad pins underscore removal - > <span style="color:red;"> test</span>
 
  </br></br><i>Note: numbered and bulleted list option and other inner GCases formats will not be saved.</i></br></p>
 <!--END  INSTRUCTIONS-->

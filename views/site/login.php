@@ -30,17 +30,20 @@ $this->params['breadcrumbs'][] = $this->title;
 //  Collapse (Hide/  show  options)
 // ******************************************************
 // ******************************************************
-//                                                     **
+//       
+
+//You may login with <strong>d****/d***(x2)(double)</strong>.<br>                                              **
+//FOR THE REASON THAT TEXT ARRAY USERS are  reassigned  to SQL  DB, you may NO LONGER login with <strong>admin/admin</strong> <br>
 echo Collapse::widget([
     'items' => [
         [
             'label' => '-',
             'content' => '   
                         <div class="col-lg-offset-1" style="color:#999;">
-                       You may login with <strong>d****/d***(x2)(double)</strong>.<br>
-                       FOR THE REASON TEXT ARRAY USERS are  reassigned  to SQL  DB ,you may NO LONGER login with <strong>admin/admin</strong> <br>
+                       
+                       FOR THE REASON THAT TEXT ARRAY USERS are reassigned to SQL DB, you can NO LONGER login with <strong>default values</strong> <br>
                        To modify the username/password, please check out the code <code>app\models\User::$users</code>(only for  case using  TEXT USERS ARRAY).
-                       Not  fits SQL (which is  now  enabled)
+                       Does not fit SQL (which is  now  enabled)
                        </div>   ',
             // to  be  this  block open  by  default   de  comment  the  following 
             /*'contentOptions' => [
@@ -150,12 +153,24 @@ if(Yii::$app->user->isGuest){    ?>
     <?php ActiveForm::end(); 
 
 echo "</br>";
-echo Html::a( "Not  registered?", ['/site/registartion', 'period' => "",   ] /* $url = null*/, $options = ['title' => 'Resistration',] );
+echo Html::a( "Not  registered?", ['/site/login', 'period' => "disabled",   ] /* $url = null*/, $options = ['title' => 'Resistration', 'id'=>'reggg'] );
+//   /site/registartion  //we deactivated the a href
 
+//display error when user tries to reg, as we temp disabled it
+ $period2=Yii::$app->getRequest()->getQueryParam('period'); 
+ if($period2=="disabled"){
+ echo "</br> </br> <span style='background-color:red;padding:1em;'>Sorry, it is currently closed for registration</span>";
+ }
 ?>
 
 
-
+<script>
+//below does not work
+$("#reggg").prop( "disabled", true );
+$("#reggg").click(function(){
+    alert("Sorry, it is closed now");
+});
+</script>
 
 
 

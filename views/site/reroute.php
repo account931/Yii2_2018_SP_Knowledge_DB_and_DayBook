@@ -35,9 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <!--  start--->
 <div class="jumbotron text-center">
   <h1>Re-Routing</h1>
-  <p>Use  re-routing  option from Waze  to  Google  Maps  and  vice versa</p> 
+  <p>Use easy re-routing option from Waze to Google Maps and vice versa</p> 
 </div>
-
 
 
 
@@ -54,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
     		
     				<div class="col-md-8"> <!--5-->
     			
-    					<h3 class="margin-bottom-40 editContent">Option 1  <span class='subtext'> ( from Waze to  GMaps)</span></h3>
+    					<h3 class="margin-bottom-40 editContent">Option 1  <span class='subtext'> ( from Waze to  GoogleMaps)</span></h3>
 
 
 
@@ -65,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
     					<form role="form">
     				
     						<div class="form-group">
-    				    		<input  type="text" class="form-control input-lg" id="Wvalue" name="name" placeholder="Put Waze permalinkg ">
+    				    		<input  type="text" class="form-control input-lg" id="Wvalue" name="name" placeholder="Put Waze  permalink (Editor or LiveMap) ">
     				  		</div>
     				  	    				  	
     				  		<!--<div class="form-group">
@@ -108,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     			
-    					</br></br></br><hr></br></br><h3 class="margin-bottom-40 editContent">Option 2 <span class='subtext'> ( from GMaps to Waze)</span></h3>
+    					</br></br></br><hr></br></br><h3 class="margin-bottom-40 editContent">Option 2 <span class='subtext'> ( from GoogleMaps to Waze)</span></h3>
 
 
 <!---------------------------------------------------FORm 2  Start------------------------------------------------->
@@ -118,7 +117,7 @@ $this->params['breadcrumbs'][] = $this->title;
     						
     				  	    				  	
     				  		<div class="form-group">
-    				  			<input type="email" class="form-control input-lg" id="Gvalue" name="email" placeholder="Put Google Maps permalinkg">
+    				  			<input type="email" class="form-control input-lg" id="Gvalue" name="email" placeholder="Put GoogleMaps permalink">
     				  		</div>
     				  	
     				  		  				  	

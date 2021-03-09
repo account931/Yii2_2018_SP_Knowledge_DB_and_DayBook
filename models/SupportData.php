@@ -47,8 +47,8 @@ class SupportData extends \yii\db\ActiveRecord
             'sData_user' => 'S Data User',
             'sData_ip' => 'S Data Ip',
             'sData_date' => 'S Data Date',
-            'sData_header' => 'S Data Header',
-            'sData_text' => 'S Data Text',
+            'sData_header' => 'CR Header',
+            'sData_text' => 'CR Text',
             'sData_category' => 'S Data Category',
         ];
     }

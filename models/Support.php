@@ -94,7 +94,7 @@ public function beforeSave($insert)  //$insert
 
 
    
-                    //start convert to Unix-------------
+                    //start convert to Unix
                         $MyDAte=$this->supp_date;
                         $j=explode("-",$MyDAte);  
                         $Monthh = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -104,7 +104,7 @@ public function beforeSave($insert)  //$insert
                         $UnixPatternDate=$j[0] ."-". $indexOF ."-". $j[3];
                         $Unix=strtotime($UnixPatternDate);
                         $this->supp_unix_Stamp=$Unix;
-                    // END convert to Unix-------------------
+                    // END convert to Unix
 
      
 

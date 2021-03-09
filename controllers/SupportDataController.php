@@ -56,18 +56,18 @@ class SupportDataController extends Controller
 // **************************************************************************************
 //                                                                                     **
     public function actionIndex()
-    {
+    { 
 
-//  default  grid View
+        //default  grid View
         $searchModel = new SupportDataSearch();
         //$dataProvider = $searchModel->search(Yii::$app->request->queryParams); //was  by  default
-     $dataProvider = new ActiveDataProvider([
-    'query' => SupportData::find()/*->where(['mydb_user' => Yii::$app->user->identity->username])*/,
-    'pagination' => [
-        'pageSize' => 4,],
-     'sort'=> ['defaultOrder' => ['sData_id'=>SORT_DESC]],
+        $dataProvider = new ActiveDataProvider([
+            'query' => SupportData::find()/*->where(['mydb_user' => Yii::$app->user->identity->username])*/,
+            'pagination' => [
+            'pageSize' => 4,],
+            'sort'=> ['defaultOrder' => ['sData_id'=>SORT_DESC]],
 
-]);
+        ]);
 
 
 
@@ -113,7 +113,7 @@ class SupportDataController extends Controller
 
 //PageLinker
            $query=SupportData::find()->orderBy ('sData_id DESC') ;
-           $pages= new Pagination(['totalCount' => $query->count(), 'pageSize' => 15]);
+           $pages= new Pagination(['totalCount' => $query->count(), 'pageSize' => 24]);
            $modelPageLinker = $query->offset($pages->offset)->limit($pages->limit)->all();
 
   

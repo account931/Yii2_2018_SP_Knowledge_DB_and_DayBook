@@ -336,7 +336,7 @@ else{
                     $MyRate=$model->supp_rate; //take value ftom Support model /*$model->supp_amount/$model->supp_hour*/
 
 
-                    Yii::$app->getSession()->setFlash('savedItem', "<b>$MyDAte </b> =>  <b>$MyAmount</b>   cases / <b>$MyHour</b> hours: rate <b>$MyRate</b>  has been SAVED ");
+                    Yii::$app->getSession()->setFlash('savedItem', "<b>$MyDAte</b> =>  <b>$MyAmount</b>   cases / <b>$MyHour</b> hours: rate <b>$MyRate</b>  has been SAVED ");
 
             return $this->redirect(['create', 'id' => $model->supp_id]);  //return $this->redirect(['view', 'id' => $model->supp_id]);
                    

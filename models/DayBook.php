@@ -56,4 +56,17 @@ class DayBook extends \yii\db\ActiveRecord
             'dbook_whenBooked' => 'Dbook When Booked',
         ];
     }
+	
+	
+	
+	
+	
+	
+	//----------------------
+    /*static function DisplayReserved(Si,$indexOf,$result)
+	    {
+         echo "<h6 class='taken'> Reserved =>  ".$i.  ".00-" .$i. ".30   <span class='bookLink'>Activity->  ".    $result[$indexOf]->dbook_agenda.    "</span>  <img class='deleteMe' id=''  style='width:3%;margin-right:0.6em;' src='images/delete.png'/></h6>";
+		 
+        }*/
+	//---------------------
 }
